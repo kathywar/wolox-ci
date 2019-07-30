@@ -3,6 +3,9 @@ import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
 def call(String yamlName) {
+    sh label: 'Shell command execution', returnStdout: true, script: 'echo Reading yaml file';
+    sh label: 'Shell command execution', returnStdout: true, script: 'echo Current dir=`pwd`';
+    sh label: 'Shell command execution', returnStdout: true, script: 'echo Listing=\n`ls -la`';
     def yaml = readYaml file: yamlName;
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
