@@ -12,7 +12,8 @@ class Steps {
     }
 
     String getString() {
-        steps.collect { 'Name=' + it.value.name + ' ' + 'Commands=' + it.value.commands.ToString() + ',' }
-        return steps.sum()
+        List<String> strvals = steps.collect { 
+            'Name=' + it.name + ' ' + 'Commands=' + it.commands.ToString() + ',' }
+        return strvals.join(',')
     }
 }
