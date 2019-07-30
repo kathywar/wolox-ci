@@ -16,7 +16,7 @@ def call(String yamlName) {
     
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
-    println "Project configuration= $ProjectConfiguration";
+    println "Project configuration= $projectConfig";
     
     //def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
 
