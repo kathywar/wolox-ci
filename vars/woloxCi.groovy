@@ -17,8 +17,12 @@ def call(String yamlName) {
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
     println "Services= $projectConfig.services";
-    println "Steps count= $projectConfig.steps.size()";
-    println "Steps= $projectConfig.steps.getString()";
+    
+    def numsteps = projectConfig.steps.size();
+    println "Steps count= $numsteps";
+
+    def stepstr = projectConfig.steps.getString();
+    println "Steps= $stepstr";
     println "Env= $projectConfig.environment";
     
     //def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
