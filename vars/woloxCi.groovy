@@ -18,10 +18,10 @@ def call(String yamlName) {
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
     println "Services= $projectConfig.services";
     
-    def numsteps = projectConfig.steps.size();
+    def numsteps = projectConfig.steps.steps.size();
     println "Steps count= $numsteps";
 
-    def stepstr = projectConfig.steps.getString();
+    def stepstr = projectConfig.steps.steps.getString();
     println "Steps= $stepstr";
     println "Env= $projectConfig.environment";
     
