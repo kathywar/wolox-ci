@@ -104,6 +104,9 @@ class ConfigParser {
             case "Elasticsearch":
                 return Elasticsearch
                 break
+            case "Shellcmd":
+                return Shellcmd
+                break
         }
     }
 
