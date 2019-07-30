@@ -21,7 +21,7 @@ def call(String yamlName) {
     def numsteps = projectConfig.steps.steps.size();
     println "Steps count= $numsteps";
 
-    def stepstr = projectConfig.steps.steps.toString();
+    def stepstr = projectConfig.steps.getString();
     println "Steps= $stepstr";
     println "Env= $projectConfig.environment";
     
