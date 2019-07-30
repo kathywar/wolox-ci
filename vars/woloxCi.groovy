@@ -6,21 +6,22 @@ def call(String yamlName) {
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Reading yaml file';
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Current dir=`pwd`';
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Listing=\n';
-    sh label: 'Shell command execution', returnStdout: true, script: 'ls -la';
+    sh label: 'Shell command execution', returnStdout: true, script: "echo `ls -la`";
 
     def yaml = readYaml file: yamlName;
-
+    println "yaml=$yaml";
+    
     def buildNumber = Integer.parseInt(env.BUILD_ID)
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
 
-    def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
+    //def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
 
-    def file = readFile(projectConfig.dockerfile)
-    def from = file.split('\n')[0]
+    //def file = readFile(projectConfig.dockerfile)
+    //def from = file.split('\n')[0]
 
-    projectConfig.baseImage = from
+    //projectConfig.baseImage = from
 
     // build the image specified in the configuration
     // def customImage = doscker.build(imageName, "--file ${projectConfig.dockerfile} .");
