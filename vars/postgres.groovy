@@ -2,6 +2,7 @@
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def version, def nextClosure) {
+    println "postgres called";
     return { variables ->
         /* Build postgres image */
         podTemplate(label: 'somelabel', containers: [

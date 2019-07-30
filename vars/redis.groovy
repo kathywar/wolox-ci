@@ -2,6 +2,7 @@
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def version, def nextClosure) {
+    println "redis called";
     return { variables ->
         /* Build redis image */
         podTemplate(label: 'redis', containers: [

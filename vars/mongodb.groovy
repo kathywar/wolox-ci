@@ -2,6 +2,7 @@
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def version, def nextClosure) {
+    println "mongodb called";
     return { variables ->
         def dbUser = 'mongoadmin'
         def dbPassword = 'my-secret-pw'

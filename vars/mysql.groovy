@@ -2,6 +2,7 @@
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def version, def nextClosure) {
+    println "mysql called";
     return { variables ->
         def dbPassword = 'my-secret-pw'
         /* Build mysql image */
