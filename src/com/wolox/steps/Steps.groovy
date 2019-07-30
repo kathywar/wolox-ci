@@ -12,7 +12,7 @@ class Steps {
     }
 
     String getString() {
-        steps.collect { it + ' ' }
+        steps.collect { 'Name=' + it.value.name + ' ' + 'Commands=' + it.value.commands.ToString() + ',' }
         return steps.sum()
     }
 }
