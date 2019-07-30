@@ -6,7 +6,7 @@ def call(ProjectConfiguration projectConfig, def dockerImage) {
     println "Called buildsteps.groovy with args projectConfig: $projectConfig";
     return { variables ->
         List<Step> stepsA = projectConfig.steps.steps
-        def links = variables.collect { k, v -> "--link ${v.id}:${k}" }.join(" ")
+        //def links = variables.collect { k, v -> "--link ${v.id}:${k}" }.join(" ")
         //dockerImage.inside(links) {
             stepsA.each { step ->
                 stage(step.name) {
@@ -15,6 +15,6 @@ def call(ProjectConfiguration projectConfig, def dockerImage) {
                     }
                 }
             }
-        //}
+       // }
     }
 }
