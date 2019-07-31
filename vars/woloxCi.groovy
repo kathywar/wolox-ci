@@ -40,7 +40,7 @@ def call(String yamlName) {
     //println "customImage=$customImage"
 
     // adds the last step of the build.
-    def closure = buildSteps(projectConfig, customImage);
+    def closure = buildSteps(projectConfig);
     println "Closure step= $closure";
     
     // each service is a closure that when called it executes its logic and then calls a closure, the next step.

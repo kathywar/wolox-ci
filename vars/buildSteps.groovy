@@ -2,7 +2,7 @@
 import com.wolox.*;
 import com.wolox.steps.Step;
 
-def call(ProjectConfiguration projectConfig, def dockerImage) {
+def call(ProjectConfiguration projectConfig) {
     println "Called buildsteps.groovy with args projectConfig: $projectConfig";
     return { 
         List<Step> stepsA = projectConfig.steps.steps
