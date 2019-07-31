@@ -25,18 +25,22 @@ def call(String yamlName) {
     println "Steps= $stepstr";
     println "Env= $projectConfig.environment";
     
-    //def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
+    def imageName = projectConfig.dockerConfiguration.imageName().toLowerCase();
+    println "imageName=$imageName"
 
-    //def file = readFile(projectConfig.dockerfile)
-    //def from = file.split('\n')[0]
+    def file = readFile(projectConfig.dockerfile)
+    println "dockerfile=$file"
 
-    //projectConfig.baseImage = from
+    def from = file.split('\n')[0]
+
+    projectConfig.baseImage = from
 
     // build the image specified in the configuration
-    // def customImage = doscker.build(imageName, "--file ${projectConfig.dockerfile} .");
+    def customImage = docker.build(imageName, "--file ${projectConfig.dockerfile} .");
+    println "customImage=$customImage"
 
     // adds the last step of the build.
-    def closure = buildSteps(projectConfig, null);
+    def closure = buildSteps(projectConfig, customImage);
     println "Closure step= $closure";
     
     // each service is a closure that when called it executes its logic and then calls a closure, the next step.
