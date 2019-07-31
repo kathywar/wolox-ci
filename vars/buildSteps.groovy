@@ -13,7 +13,7 @@ def call(ProjectConfiguration projectConfig, def dockerImage) {
                     step.commands.each { command ->
                         //sh command
                         println "Command=$command"
-                        sh label: 'Shell command execution', returnStdout: true, script: command
+                        sh label: 'Shell command execution', returnStdout: true, script: "$command"
                     }
                 }
             }
