@@ -2,7 +2,7 @@
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def _, def nextClosure) {
-    println "Calling base.groovy with args $_ , $nextClosure";
+    println "Calling base.groovy";
     return { variables ->
         podTemplate(label: 'base', containers: [
             containerTemplate(

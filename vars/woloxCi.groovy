@@ -36,8 +36,8 @@ def call(String yamlName) {
     projectConfig.baseImage = from
 
     // build the image specified in the configuration
-    def customImage = docker.build(imageName, "--file ${projectConfig.dockerfile} .");
-    println "customImage=$customImage"
+    //def customImage = docker.build(imageName, "--file ${projectConfig.dockerfile} .");
+    //println "customImage=$customImage"
 
     // adds the last step of the build.
     def closure = buildSteps(projectConfig, customImage);
