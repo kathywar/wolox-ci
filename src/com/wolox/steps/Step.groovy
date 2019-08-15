@@ -4,6 +4,6 @@ class Step {
     List<String> commands = [];
     String name;
     String script() {
-        return commands.join('\n') + \n;
+        return commands.join('\n') + '\n';
     }
 }
