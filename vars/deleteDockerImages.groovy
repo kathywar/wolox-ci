@@ -1,7 +1,8 @@
-@Library('wolox-ci')
+//@Library('wolox-ci')
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig) {
+    println "deletedockerimages called";
     def reference = projectConfig.dockerConfiguration.reference();
     try {
         sh "docker images --filter 'reference=${reference}*' --format \"{{.Tag}} {{.Repository}}:{{.Tag}}\" | sort -n | sed '\$d' | awk '{ print \$2 }' | xargs --no-run-if-empty docker rmi"

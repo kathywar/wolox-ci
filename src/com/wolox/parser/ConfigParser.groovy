@@ -11,24 +11,32 @@ class ConfigParser {
     private static Integer DEFAULT_TIMEOUT = 600;   // 600 seconds
 
     static ProjectConfiguration parse(def yaml, def env) {
+        println "ProjectConfiguration called with args yaml:$yaml env=$env";
+
         ProjectConfiguration projectConfiguration = new ProjectConfiguration();
 
         projectConfiguration.buildNumber = env.BUILD_ID;
+        println "buildNumber=$projectConfiguration.buildNumber";
 
         // parse the environment variables
         projectConfiguration.environment    = parseEnvironment(yaml.environment);
+        println "environment=$projectConfiguration.environment";
 
         // parse the execution steps
         projectConfiguration.steps          = parseSteps(yaml.steps);
+        println "steps=$projectConfiguration.steps";
 
         // parse the necessary services
         projectConfiguration.services   = parseServices(yaml.services);
+        println "services=$projectConfiguration.services";
 
         // load the dockefile
         projectConfiguration.dockerfile = parseDockerfile(yaml.config);
+        println "dockerfile=$projectConfiguration.dockerfile";
 
         // load the project name
         projectConfiguration.projectName = parseProjectName(yaml.config);
+        println "name=$projectConfiguration.projectName";
 
         projectConfiguration.env = env;
 

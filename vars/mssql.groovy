@@ -1,7 +1,8 @@
-@Library('wolox-ci')
+//@Library('wolox-ci')
 import com.wolox.*;
 
 def call(ProjectConfiguration projectConfig, def version, def nextClosure) {
+    println "mssql called";
     return { variables ->
         def dbPassword = 'someReallyStrongPwd123'
         /* Build mssql image */
