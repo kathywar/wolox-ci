@@ -11,8 +11,11 @@ def call(ProjectConfiguration projectConfig) {
                 step.commands.each { command ->
                     println "Command=$command"
                     withEnv(projectConfig.environment) {
-                        println "Command=$command"
-                        sh """$command """
+                      println "Script is " + step.script()
+                      def myscr=step.script()
+                      sh """
+                        $myscr
+                      """
                     }
                 }
             }
