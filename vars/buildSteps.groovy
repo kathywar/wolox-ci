@@ -13,7 +13,7 @@ def call(ProjectConfiguration projectConfig) {
                       println "Script is " + step.script()
                       def myscr=step.script()
                       sh """
-                        $step.script()
+                        $myscr
                       """
                     }
             }
