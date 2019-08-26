@@ -8,7 +8,7 @@ def call(ProjectConfiguration projectConfig) {
         List<Step> stepsA = projectConfig.steps.steps
         stepsA.each { step ->
             stage(step.name) {
-                step.commands.each { command ->
+                command ->
                     println "Command=$command"
                     withEnv(projectConfig.environment) {
                       println "Script is " + step.script()
@@ -17,7 +17,6 @@ def call(ProjectConfiguration projectConfig) {
                         $myscr
                       """
                     }
-                }
             }
         }
     }
