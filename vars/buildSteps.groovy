@@ -3,22 +3,24 @@ import com.wolox.*;
 import com.wolox.steps.Step;
 
 def call(ProjectConfiguration projectConfig) {
-    println "Called buildsteps.groovy"
-    return {
-        List<Step> stepsA = projectConfig.steps.steps
-        stepsA.each { step ->
-            stage(step.name) {
-//                command ->
-                    timeout(time: projectConfig.timeout, unit: 'SECONDS') {
-                        withEnv(projectConfig.environment) {
-                            println "Script is " + step.script()
-                            def myscr=step.script()
-                            sh """
-                                $myscr
-                            """
-                        }
-                    }
+  return {
+    List<Step> stepsA = projectConfig.steps.steps
+    stepsA.each { step ->
+      stage(step.name) {
+        try {
+          timeout(time: projectConfig.timeout) {
+            withEnv(projectConfig.environment) {
+              println "Script is " + step.script()
+              def myscr=step.script()
+              sh """
+                $myscr
+              """
             }
-        }
+          } 
+        } catch(err) { // timeout reached
+         println "Caught: ${err}"
+         currentBuild.result = 'FAILURE'
+      }
     }
+  }
 }
