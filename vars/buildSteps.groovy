@@ -20,6 +20,7 @@ def call(ProjectConfiguration projectConfig) {
         } catch(err) { // timeout reached
          println "Caught: ${err}"
          currentBuild.result = 'FAILURE'
+        }
       }
     }
   }
