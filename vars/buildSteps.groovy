@@ -7,19 +7,14 @@ def call(ProjectConfiguration projectConfig) {
     List<Step> stepsA = projectConfig.steps.steps
     stepsA.each { step ->
       stage(step.name) {
-        try {
-          timeout(time: projectConfig.timeout) {
-            withEnv(projectConfig.environment) {
-              println "Script is " + step.script()
-              def myscr=step.script()
-              sh """
-                $myscr
-              """
-            }
-          } 
-        } catch(err) { // timeout reached
-         println "Caught: ${err}"
-         currentBuild.result = 'FAILURE'
+        timeout(time: projectConfig.timeout) {
+          withEnv(projectConfig.environment) {
+            println "Script is " + step.script()
+            def myscr=step.script()
+            sh """
+              $myscr
+            """
+          }
         }
       }
     }
