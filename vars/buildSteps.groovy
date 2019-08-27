@@ -8,7 +8,7 @@ def call(ProjectConfiguration projectConfig) {
         List<Step> stepsA = projectConfig.steps.steps
         stepsA.each { step ->
             stage(step.name) {
-                command ->
+//                command ->
                     timeout(time: projectConfig.timeout, unit: 'SECONDS') {
                         withEnv(projectConfig.environment) {
                             println "Script is " + step.script()
