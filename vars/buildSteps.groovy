@@ -9,12 +9,14 @@ def call(ProjectConfiguration projectConfig) {
         stepsA.each { step ->
             stage(step.name) {
                 command ->
-                    withEnv(projectConfig.environment) {
-                      println "Script is " + step.script()
-                      def myscr=step.script()
-                      sh """
-                        $myscr
-                      """
+                    timeout(time: projectConfig.timeout, unit: 'SECONDS') {
+                        withEnv(projectConfig.environment) {
+                            println "Script is " + step.script()
+                            def myscr=step.script()
+                            sh """
+                                $myscr
+                            """
+                        }
                     }
             }
         }
