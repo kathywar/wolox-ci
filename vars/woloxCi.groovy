@@ -43,9 +43,6 @@ def call(String yamlName="jenkins/jenkins.yml") {
             println "Branch=$env.GIT_LOCAL_BRANCH"
             println "Branch is $env.BRANCH_NAME"
             println "Local branch is $env.GIT_LOCAL_BRANCH"
-
-            sh label: 'Shell command execution', returnStdout: true,
-               script: "printenv | sort";
         }
 
         env.WSDIR=env.WORKSPACE + '/ws'
@@ -72,8 +69,6 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
-
-    println "Services: $projectConfig.services"
 
     def numsteps = projectConfig.steps.steps.size();
 
