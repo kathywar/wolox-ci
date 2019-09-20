@@ -2,30 +2,34 @@
 import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
-def call(String yamlName) {
+def call(String yamlName="jenkins/jenkins.yml") {
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Reading yaml file';
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Current dir=`pwd`';
     sh label: 'Shell command execution', returnStdout: true, script: "echo `ls -la`";
 
-    def yaml = readYaml file: yamlName;
-    println "yaml=$yaml";
-
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber";
+
+    // clean workspace
+    stage('CleanWS') {
+        deleteDir()
+    }
 
     // create workspace
 
     stage('CreateWS') {
         sh label: 'Shell command execution', returnStdout: true, script: "echo `printenv | sort`";
         def url = scm.getUserRemoteConfigs()[0].getUrl()
-        def repoName = url.tokenize('/').last().split("\\.git")[0] 
+        def repoName = url.tokenize('/').last().split("\\.git")[0]
+        println "Repo name: $repoName"
+        println "Url: $url"
         script {
 
-            gitVars = dir('ws/$repoName') {
+            gitVars = dir("ws/$repoName") {
                 git changelog: false,
                 credentialsId: 'kmw-github-cred',
                 poll: false,
-                url: '$url',
+                url: "$url"
             }
 
             env.GIT_COMMIT = gitVars.GIT_COMMIT
@@ -41,6 +45,8 @@ def call(String yamlName) {
         }
 
         env.WSDIR=env.WORKSPACE + '/ws'
+        env.REPO_PATH=env.WSDIR + "/$repoName"
+
         println "Workdir=$env.WSDIR"
 
         if ( env.CHANGE_BRANCH ) {
@@ -52,10 +58,14 @@ def call(String yamlName) {
         }
 
         sh label: 'Shell command execution', returnStdout: true,
-           script: "cd $WSDIR/$repoName && git checkout $LOCAL_BRANCH";
+           script: "cd $REPO_PATH && git checkout $LOCAL_BRANCH";
 
         buildDescription 'Workspace checkout is complete.'
     }
+
+    yamlName = "$env.REPO_PATH/$yamlName"
+    def yaml = readYaml file: yamlName;
+    println "yaml=$yaml";
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
