@@ -3,10 +3,6 @@ import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
 def call(String yamlName="jenkins/jenkins.yml") {
-    echo 'Reading yaml file';
-
-    def yaml = readYaml file: yamlName;
-    println "yaml=$yaml";
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber";
@@ -66,6 +62,7 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     yamlName = "$env.REPO_PATH/$yamlName"
     def yaml = readYaml file: yamlName;
+    println "yaml=$yaml";
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
