@@ -15,8 +15,12 @@ def call(String yamlName="jenkins/jenkins.yml") {
         deleteDir()
     }
 
-    // create workspace
+    // prepare archive
+    sh label: 'Shell command execution', returnStdout: true,
+       script: "if [ -d $WORKSPACE/archive ]; then rm -rf $WORKSPACE/archive; fi; mkdir $WORKSPACE/archive";
 
+    // create workspace
+    // TODO: put in class structure as a subclass of Step
     stage('Create Workspace') {
         sh label: 'Shell command execution', returnStdout: true, script: "echo `printenv | sort`";
         def url = scm.getUserRemoteConfigs()[0].getUrl()
@@ -85,4 +89,8 @@ def call(String yamlName="jenkins/jenkins.yml") {
         closure([:]);
     } finally{
     }
+
+    // archive - TODO: put in class structure as a subclass of Step
+    archiveArtifacts artifacts: 'archive/', allowEmptyArchive: true
+
 }
