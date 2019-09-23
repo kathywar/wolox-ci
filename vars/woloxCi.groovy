@@ -17,7 +17,7 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     // create workspace
 
-    stage('CreateWS') {
+    stage('Create Workspace') {
         sh label: 'Shell command execution', returnStdout: true, script: "echo `printenv | sort`";
         def url = scm.getUserRemoteConfigs()[0].getUrl()
         def repoName = url.tokenize('/').last().split("\\.git")[0]
