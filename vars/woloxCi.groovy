@@ -4,14 +4,12 @@ import com.wolox.*;
 
 def call(String yamlName="jenkins/jenkins.yml") {
     sh label: 'Shell command execution', returnStdout: true, script: 'echo Reading yaml file';
-    sh label: 'Shell command execution', returnStdout: true, script: 'echo Current dir=`pwd`';
-    sh label: 'Shell command execution', returnStdout: true, script: "echo `ls -la`";
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber";
 
     // clean workspace
-    stage('CleanWS') {
+    stage('clean workspace') {
         deleteDir()
     }
 
@@ -21,7 +19,7 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     // create workspace
     // TODO: put in class structure as a subclass of Step
-    stage('Create Workspace') {
+    stage('create workspace') {
         sh label: 'Shell command execution', returnStdout: true, script: "echo `printenv | sort`";
         def url = scm.getUserRemoteConfigs()[0].getUrl()
         def repoName = url.tokenize('/').last().split("\\.git")[0]
@@ -45,7 +43,6 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
             sh label: 'Shell command execution', returnStdout: true,
                script: "printenv | sort";
-
         }
 
         env.WSDIR=env.WORKSPACE + '/ws'
@@ -69,17 +66,13 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     yamlName = "$env.REPO_PATH/$yamlName"
     def yaml = readYaml file: yamlName;
-    println "yaml=$yaml";
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
 
     def numsteps = projectConfig.steps.steps.size();
-    println "Steps count= $numsteps";
 
     def stepstr = projectConfig.steps.getString();
-    println "Steps= $stepstr";
-    println "Env= $projectConfig.environment";
 
     // adds the last step of the build.
     def closure = buildSteps(projectConfig);
