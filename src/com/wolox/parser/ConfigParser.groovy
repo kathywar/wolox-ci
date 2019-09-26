@@ -2,6 +2,7 @@ package com.wolox.parser;
 
 import com.wolox.ProjectConfiguration;
 import com.wolox.docker.DockerConfiguration;
+import com.wolox.os.*
 import com.wolox.services.*;
 import com.wolox.steps.*;
 
@@ -9,6 +10,7 @@ class ConfigParser {
 
     private static String LATEST = 'latest';
     private static Integer DEFAULT_TIMEOUT = 600;   // 600 seconds
+    private static String DEFAULT_OS = 'linux';
 
     static ProjectConfiguration parse(def yaml, def env) {
 
@@ -20,7 +22,7 @@ class ConfigParser {
         projectConfiguration.environment    = parseEnvironment(yaml.environment);
 
         // parse the execution OS
-        projectConfiguration.OS = parseOS(yaml.OS);
+        projectConfiguration.os = yaml.os ?: DEFAULT_OS;
 
         // parse the execution steps
         projectConfiguration.steps          = parseSteps(yaml.steps);
@@ -49,13 +51,6 @@ class ConfigParser {
         }
 
         return environment.collect { k, v -> "${k}=${v}"};
-    }
-
-    static def parseOS(def yamlOS) {
-        if (!yamlOS) {
-            return this.class.classLoader.loadClass( 'linux', true, false )?.newInstance()
-        }
-        return this.class.classLoader.loadClass( yamlOS, true, false )?.newInstance()
     }
 
     static def parseSteps(def yamlSteps) {
@@ -87,8 +82,7 @@ class ConfigParser {
         return services
     }
 
-    static def getServiceClass(def name) {
-        // TODO: Refactor this
+    static def getServiceClass( def name ){
         switch(name) {
             case "Postgres":
                 return Postgres
