@@ -1,6 +1,6 @@
 package com.wolox.os
 
-class linux extends os {
+class linux extends OS {
 
     int shell( string script ) {
         shell sh returnStdout:true,

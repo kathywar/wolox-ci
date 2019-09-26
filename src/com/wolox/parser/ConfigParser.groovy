@@ -53,9 +53,9 @@ class ConfigParser {
 
     static def parseOS(def yamlOS) {
         if (!yamlOS) {
-            return this.class.classLoader.loadClass( 'linux', true, false )?.newInstance()        
+            return this.class.classLoader.loadClass( 'linux', true, false )?.newInstance()
         }
-        return this.class.classLoader.loadClass( yamlOS, true, false )?.newInstance()    
+        return this.class.classLoader.loadClass( yamlOS, true, false )?.newInstance()
     }
 
     static def parseSteps(def yamlSteps) {

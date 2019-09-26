@@ -1,6 +1,6 @@
 package com.wolox.os
 
-class windows extends os {
+class windows extends OS {
 
     int shell( string script ) {
         shell bat returnStdout:true,
