@@ -11,9 +11,7 @@ def call(ProjectConfiguration projectConfig) {
           withEnv(projectConfig.environment) {
             println "Script is " + step.script()
             def myscr=step.script()
-            sh """
-              $myscr
-            """
+            projectConfig.os.shell step.script()
           }
         }
       }
