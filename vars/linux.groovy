@@ -2,17 +2,14 @@
 import com.wolox.*;
 import com.wolox.steps.Step;
 
-def call(ProjectConfiguration projectConfig) {
+def call(Step step) {
   return {
-    List<Step> stepsA = projectConfig.steps.steps
-    stepsA.each { step ->
-      stage(step.name) {
-        timeout(time: projectConfig.timeout) {
-          withEnv(projectConfig.environment) {
-            println "Script is " + step.script()
-            def myscr=step.script()
-            sh returnStdout: true, script: "$myscr"
-          }
+    stage(step.name) {
+      timeout(time: projectConfig.timeout) {
+        withEnv(projectConfig.environment) {
+          println "Script is " + step.script()
+          def myscr=step.script()
+          sh returnStdout: true, script: "$myscr"
         }
       }
     }

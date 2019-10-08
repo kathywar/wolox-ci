@@ -6,12 +6,16 @@ def call(ProjectConfiguration projectConfig) {
   return {
     List<Step> stepsA = projectConfig.steps.steps
     stepsA.each { step ->
-      stage(step.name) {
-        timeout(time: projectConfig.timeout) {
-          withEnv(projectConfig.environment) {
-            println "Script is " + step.script()
-            def myscr=step.script()
-            projectConfig.os.shell(myscr)
+      step.ostypes.each {
+        node("${it}") {
+          stage(step.name) {
+            timeout(time: projectConfig.timeout) {
+              withEnv(projectConfig.environment) {
+                println "Script is " + step.script()
+                def myscr=step.script()
+                "${it}"(step)
+              }
+            }
           }
         }
       }

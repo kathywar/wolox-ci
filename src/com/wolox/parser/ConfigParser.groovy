@@ -21,9 +21,6 @@ class ConfigParser {
         // parse the environment variables
         projectConfiguration.environment    = parseEnvironment(yaml.environment);
 
-        // parse the execution OS
-        projectConfiguration.os = yaml.os ?: DEFAULT_OS;
-
         // parse the execution steps
         projectConfiguration.steps          = parseSteps(yaml.steps);
 
@@ -59,11 +56,16 @@ class ConfigParser {
 
             // a step can have one or more commands to execute
             v.each {
-                step.commands.add(it);
+                if (yamlSteps.k.os) {
+                  step.ostypes.add(yamlSteps.k.os)
+                } else {
+                  step.ostypes.add([DEFAULT_OS])
+                }
+                step.commands.add(yamlSteps.k.script)
             }
             return step
         }
-        return new Steps(steps: steps);
+        return new Steps(steps: steps)
     }
 
     static def parseServices(def steps) {
