@@ -15,13 +15,16 @@ def call(ProjectConfiguration projectConfig) {
       stage(step.name) {
         timeout(time: projectConfig.timeout) {
           withEnv(projectConfig.environment) {
-            def echoscript = ""
+            def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
             step.commands.each { 
                 echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n" 
             }
             writeFile file: "$WORKSPACE\\icl-pipeline.sh", text: """$echoscript"""
             env.FILEPATH="$env.WKSPACE/icl-pipeline.sh"
-            echo bat (returnStdout:true, script: """r:\\u4win\\u4w_ksh.bat /c %FILEPATH% """)
+            echo bat (returnStdout:true,
+                      script: """call r:\\u4win\\u4w_ksh.bat /c %FILEPATH%
+                                 exit %ERRORLEVEL
+                              """)
             bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
           }
         }
