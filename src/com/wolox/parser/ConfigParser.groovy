@@ -8,9 +8,11 @@ import com.wolox.steps.*;
 
 class ConfigParser {
 
-    private static String LATEST = 'latest';
-    private static Integer DEFAULT_TIMEOUT = 600;   // 600 seconds
-    private static String DEFAULT_OS = 'linux';
+    private static String LATEST = 'latest'
+    private static Integer DEFAULT_TIMEOUT = 600   // 600 seconds
+    private static String DEFAULT_OS = 'linux'
+    private static String DEFAULT_WN_NODE = 'WN'
+    private static String DEFAULT_LN_NODE = 'LX'
 
     static ProjectConfiguration parse(def yaml, def env) {
 
@@ -51,18 +53,19 @@ class ConfigParser {
     }
 
     static def parseSteps(def yamlSteps) {
+
         List<Step> steps = yamlSteps.collect { k, v ->
             Step step = new Step(name: k)
 
-            // a step can have one or more commands to execute
-            v.each {
-                if (yamlSteps.k.os) {
-                  step.ostypes.add(yamlSteps.k.os)
-                } else {
-                  step.ostypes.add([DEFAULT_OS])
-                }
-                step.commands.add(yamlSteps.k.script)
+            if (yamlSteps[k].os) {
+                step.osMatrix = yamlSteps[k].os
+            } else {
+                step.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
             }
+
+           // yamlSteps.steps[k].script.each {
+               step.commands.add(yamlSteps[k].script)
+           // }
             return step
         }
         return new Steps(steps: steps)

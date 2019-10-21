@@ -6,14 +6,15 @@ def call(ProjectConfiguration projectConfig) {
   return {
     List<Step> stepsA = projectConfig.steps.steps
     stepsA.each { step ->
-      step.ostypes.each {
-        node("${it}") {
-          stage(step.name) {
+      step.osMatrix.each { k,v ->
+        println "Key=$k, Val=$v"
+        node("${k}") {
+          stage("$step.name-$k") {
             timeout(time: projectConfig.timeout) {
               withEnv(projectConfig.environment) {
                 println "Script is " + step.script()
                 def myscr=step.script()
-                "${it}"(step)
+                "${v}"(step)
               }
             }
           }

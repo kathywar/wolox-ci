@@ -74,16 +74,13 @@ def call(String yamlName="jenkins/jenkins.yml") {
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
 
     println "Services: $projectConfig.services"
-    println "OS: $projectConfig.os"
+
     def numsteps = projectConfig.steps.steps.size();
 
     def stepstr = projectConfig.steps.getString();
 
     // adds the last step of the build.
     def closure = buildSteps(projectConfig);
-
-    // each service is a closure that when called it executes its logic and then calls a closure, the next ste
-    //def closure = "${projectConfig.os}"(projectConfig);
 
     // we execute the top level closure so that the cascade starts.
     try {

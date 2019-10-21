@@ -13,7 +13,7 @@ class Steps {
 
     String getString() {
         List<String> strvals = steps.collect {
-            'Name=' + it.name + ' ' + 'OS-Types=' + it.ostypes.toString() + ',' +
+            'Name=' + it.name + ' ' + 'OS-Types=' + it.osMatrix.toString() + ',' +
             'Commands=' + it.commands.toString() + ',' }
         return strvals.join(',')
     }
