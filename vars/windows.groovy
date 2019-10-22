@@ -10,6 +10,7 @@ def call(Step step) {
     // create archive
     bat returnStdout: true, script: "if not exist archive (mkdir archive)"
 
+    println "Step: $step.name"
     stage(step.name) {
       timeout(time: projectConfig.timeout) {
         withEnv(projectConfig.environment) {
