@@ -63,9 +63,9 @@ class ConfigParser {
                 step.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
             }
 
-           // yamlSteps.steps[k].script.each {
-               step.commands.add(yamlSteps[k].script)
-           // }
+            yamlSteps[k].script.each {
+               step.commands.add(it)
+            }
             return step
         }
         return new Steps(steps: steps)

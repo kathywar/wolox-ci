@@ -12,7 +12,7 @@ def call(ProjectConfiguration projectConfig) {
           stage("$step.name-$k") {
             timeout(time: projectConfig.timeout) {
               withEnv(projectConfig.environment) {
-                println "Script is " + step.script()
+                println "Script is\n" + step.script()
                 def myscr=step.script()
                 def closure = "${v}"(step)
                 closure()
