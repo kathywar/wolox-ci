@@ -4,7 +4,6 @@ import com.wolox.steps.Step;
 
 def call(Step step) {
   return {
-    stage(step.name) {
       sh returnStdout: true, script: "if [ ! -d archive ]; then mkdir archive; fi"
 
       println "Step: $step.name"
@@ -12,6 +11,5 @@ def call(Step step) {
       def myscr=step.script()
       sh(returnStdout: true, script: """$myscr""")
       archiveArtifacts artifacts: 'archive/', allowEmptyArchive: true
-    }
   }
 }
