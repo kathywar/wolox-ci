@@ -10,7 +10,7 @@ def call(Step step) {
       println "Step: $step.name"
       println "Step script is " + step.script()
       def myscr=step.script()
-      echo sh(returnStdout: true, script: """$myscr""")
+      sh(returnStdout: true, script: """$myscr""")
       archiveArtifacts artifacts: 'archive/', allowEmptyArchive: true
     }
   }
