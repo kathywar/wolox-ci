@@ -3,7 +3,6 @@ import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
 def call(String yamlName="jenkins/jenkins.yml") {
-    echo 'Reading yaml file'
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
@@ -12,10 +11,6 @@ def call(String yamlName="jenkins/jenkins.yml") {
     stage('clean workspace') {
         deleteDir()
     }
-
-    // prepare archive
-    sh label: 'Shell command execution', returnStdout: true,
-       script: "if [ -d $WORKSPACE/archive ]; then rm -rf $WORKSPACE/archive; fi; mkdir $WORKSPACE/archive";
 
     // create workspace
     // TODO: put in class structure as a subclass of Step
@@ -80,8 +75,4 @@ def call(String yamlName="jenkins/jenkins.yml") {
         closure([:]);
     } finally{
     }
-
-    // archive - TODO: put in class structure as a subclass of Step
-    archiveArtifacts artifacts: 'archive/', allowEmptyArchive: true
-
 }

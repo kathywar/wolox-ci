@@ -1,4 +1,3 @@
-//@Library('wolox-ci')
 import com.wolox.*;
 import com.wolox.steps.Step;
 
@@ -13,7 +12,6 @@ def call(ProjectConfiguration projectConfig) {
             timeout(time: projectConfig.timeout) {
               withEnv(projectConfig.environment) {
                 println "Script is\n" + step.script()
-                def myscr=step.script()
                 def closure = "${v}"(step)
                 closure()
               }
