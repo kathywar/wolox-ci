@@ -15,7 +15,8 @@ def call(String yamlName="jenkins/jenkins.yml") {
     // create workspace
     // TODO: put in class structure as a subclass of Step
     stage('create workspace') {
-        sh label: 'Shell command execution', returnStdout: true, script: "echo `printenv | sort`";
+        sh label: 'Shell command execution', returnStdout: true,
+           script: "echo `printenv | sort`";
         def url = scm.getUserRemoteConfigs()[0].getUrl()
         def repoName = url.tokenize('/').last().split("\\.git")[0]
         println "Repo name: $repoName"
@@ -62,10 +63,6 @@ def call(String yamlName="jenkins/jenkins.yml") {
 
     // load project's configuration
     ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
-
-    def numsteps = projectConfig.steps.steps.size();
-
-    def stepstr = projectConfig.steps.getString();
 
     // adds the last step of the build.
     def closure = buildSteps(projectConfig);

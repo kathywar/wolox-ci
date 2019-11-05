@@ -2,7 +2,6 @@ package com.wolox.parser;
 
 import com.wolox.ProjectConfiguration;
 import com.wolox.docker.DockerConfiguration;
-import com.wolox.os.*
 import com.wolox.services.*;
 import com.wolox.steps.*;
 
@@ -24,7 +23,7 @@ class ConfigParser {
         projectConfiguration.environment    = parseEnvironment(yaml.environment);
 
         // parse the execution steps
-        projectConfiguration.steps          = parseSteps(yaml.steps);
+        projectConfiguration.tasks          = parseTasks(yaml.tasks);
 
         // parse the necessary services
         projectConfiguration.services   = parseServices(yaml.services);
@@ -52,23 +51,37 @@ class ConfigParser {
         return environment.collect { k, v -> "${k}=${v}"};
     }
 
-    static def parseSteps(def yamlSteps) {
+    static def parseTasks(def yamlTasks) {
 
+        List<Task> tasks = yamlTasks.collect { k, v ->
+            Task task = new Task(name: k)
+
+            task.taskType = v.type
+
+            if (v.os) {
+                task.osMatrix = v.os
+            } else {
+                task.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
+            }
+
+            task.steps = parseSteps(v.steps)
+
+            return task
+        }
+        return new Tasks(tasks: tasks)
+    }
+
+    static def parseSteps(def yamlSteps) {
         List<Step> steps = yamlSteps.collect { k, v ->
             Step step = new Step(name: k)
 
-            if (yamlSteps[k].os) {
-                step.osMatrix = yamlSteps[k].os
-            } else {
-                step.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
-            }
-
-            yamlSteps[k].script.each {
-               step.commands.add(it)
+            // a step can have one or more commands to execute
+            v.each {
+                step.commands.add(it);
             }
             return step
         }
-        return new Steps(steps: steps)
+        return new Steps(steps: steps);
     }
 
     static def parseServices(def steps) {
