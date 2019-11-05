@@ -1,4 +1,3 @@
-//@Library('wolox-ci')
 import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
@@ -7,69 +6,19 @@ def call(String yamlName="jenkins/jenkins.yml") {
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
 
-    // clean workspace
-    stage('clean workspace') {
-        deleteDir()
-    }
-
-    // create workspace
-    // TODO: put in class structure as a subclass of Step
-    stage('create workspace') {
-        sh label: 'Shell command execution', returnStdout: true,
-           script: "echo `printenv | sort`";
-        def url = scm.getUserRemoteConfigs()[0].getUrl()
-        def repoName = url.tokenize('/').last().split("\\.git")[0]
-        println "Repo name: $repoName"
-        println "Url: $url"
-        script {
-
-            gitVars = dir("ws/$repoName") {
-                git changelog: false,
-                credentialsId: 'kmw-github-cred',
-                poll: false,
-                url: "$url"
-            }
-
-            env.GIT_COMMIT = gitVars.GIT_COMMIT
-            env.GIT_LOCAL_BRANCH = gitVars.GIT_LOCAL_BRANCH
-            env.GIT_BRANCH = gitVars.GIT_BRANCH
-            println "Branch=$env.GIT_LOCAL_BRANCH"
-            println "Branch is $env.BRANCH_NAME"
-            println "Local branch is $env.GIT_LOCAL_BRANCH"
-
-        }
-
-        env.WSDIR=env.WORKSPACE + '/ws'
-        env.REPO_PATH=env.WSDIR + "/$repoName"
-
-        println "Workdir=$env.WSDIR"
-
-        if ( env.CHANGE_BRANCH ) {
-            env.LOCAL_BRANCH=env.CHANGE_BRANCH
-        } else if ( env.BRANCH_NAME ) {
-            env.LOCAL_BRANCH=env.BRANCH_NAME
-        } else {
-            env.LOCAL_BRANCH=env.GIT_BRANCH.drop(env.GIT_BRANCH.indexOf('/')+1)
-        }
-
-        sh label: 'Shell command execution', returnStdout: true,
-           script: "cd $REPO_PATH && git checkout $LOCAL_BRANCH";
-
-        buildDescription 'Workspace checkout is complete.'
-    }
-
-    yamlName = "$env.REPO_PATH/$yamlName"
+    // must clone once to retrieve yaml file
+    def wscreate = scmworkspace([:], 15)
     def yaml = readYaml file: yamlName;
 
     // load project's configuration
-    ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env);
+    ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
 
     // adds the last step of the build.
-    def closure = buildSteps(projectConfig);
+    def closure = buildSteps(projectConfig)
 
     // we execute the top level closure so that the cascade starts.
     try {
-        closure([:]);
+        closure([:])
     } finally{
     }
 }
