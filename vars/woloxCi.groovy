@@ -7,7 +7,10 @@ def call(String yamlName="jenkins/jenkins.yml") {
     println "Build number= $buildNumber"
 
     // must clone once to retrieve yaml file
-    def wscreate = scmworkspace([:], 15)
+    deleteDir()
+    def wscreate = scmworkspace([], 15)
+    wscreate()
+
     def yaml = readYaml file: yamlName;
 
     // load project's configuration

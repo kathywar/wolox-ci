@@ -8,15 +8,16 @@ def call(ProjectConfiguration projectConfig) {
       task.osMatrix.each { k,v ->
         println "Key=$k, Val=$v"
         node("${k}") {
-          // may make this optional in future
+          println "workspace type: $task.wsType"
           stage('clean workspace') {
-            deleteDir()
+           deleteDir()
           }
 
-          println "workspace type: $task.wsType"
-          def wscreate = "$task.wsType"(projectConfig.environment,
-                                        projectConfig.timeout)
-          wscreate()
+          stage("create workspace-$k") {
+            def wscreate = "$task.wsType"(projectConfig.environment,
+                                          projectConfig.timeout)
+            wscreate()
+          }
 
           List<Step> stepsA = task.steps.steps
           stepsA.each { step ->
