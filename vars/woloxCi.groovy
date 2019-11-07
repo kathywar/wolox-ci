@@ -11,6 +11,7 @@ def call(String yamlName="jenkins/jenkins.yml") {
       deleteDir()
       def wscreate = scmworkspace([], 15)
       wscreate()
+      sh "cd $REPO_PATH"
     }
 
     def yaml = readYaml file: yamlName;

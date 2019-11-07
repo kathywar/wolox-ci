@@ -6,7 +6,6 @@ def call(ProjectConfiguration projectConfig) {
     List<Task> tasksA = projectConfig.tasks.tasks
     tasksA.each { task ->
       task.osMatrix.each { k,v ->
-        println "Key=$k, Val=$v"
         node("${k}") {
           println "workspace type: $task.wsType"
           stage("create workspace-$k") {
