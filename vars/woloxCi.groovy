@@ -1,7 +1,7 @@
 import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
-def call(String yamlName="jenkins/jenkins.yml") {
+def call(String yamlName="") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
@@ -11,9 +11,11 @@ def call(String yamlName="jenkins/jenkins.yml") {
       deleteDir()
       def wscreate = scmworkspace([], 15)
       wscreate()
-      sh "cd $REPO_PATH"
     }
 
+    if ( yamlName == "" ) {
+      yamlName = "$env.REPO_PATH/jenkins/jenkins.yml"
+    }
     def yaml = readYaml file: yamlName;
 
     // load project's configuration
