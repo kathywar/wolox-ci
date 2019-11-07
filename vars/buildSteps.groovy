@@ -9,11 +9,8 @@ def call(ProjectConfiguration projectConfig) {
         println "Key=$k, Val=$v"
         node("${k}") {
           println "workspace type: $task.wsType"
-          stage('clean workspace') {
-           deleteDir()
-          }
-
           stage("create workspace-$k") {
+            deleteDir()
             def wscreate = "$task.wsType"(projectConfig.environment,
                                           projectConfig.timeout)
             wscreate()
