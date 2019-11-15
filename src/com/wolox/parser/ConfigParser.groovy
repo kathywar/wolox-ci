@@ -65,7 +65,7 @@ class ConfigParser {
             }
 
             task.steps = parseSteps(v.steps)
-
+            task.dependencies = parseDependencies(v.dependencies)
             return task
         }
         return new Tasks(tasks: tasks)
