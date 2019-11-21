@@ -2,6 +2,7 @@ package com.wolox.parser;
 
 import com.wolox.ProjectConfiguration;
 import com.wolox.docker.DockerConfiguration;
+import com.wolox.dependency.*
 import com.wolox.services.*;
 import com.wolox.steps.*;
 
@@ -59,13 +60,21 @@ class ConfigParser {
             task.taskType = v.type
 
             if (v.os) {
-                task.osMatrix = v.os
+                task.osMatrix = v.os.collectEntries()
             } else {
                 task.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
             }
 
             task.steps = parseSteps(v.steps)
-            task.dependencies = parseDependencies(v.dependencies)
+
+            if (v.artifacts) {
+              task.artifacts = v.artifacts.paths
+            }
+            
+            if (v.dependencies) {
+              task.dependencies = parseDependencies(v.dependencies)
+            }
+
             return task
         }
         return new Tasks(tasks: tasks)
@@ -82,6 +91,19 @@ class ConfigParser {
             return step
         }
         return new Steps(steps: steps);
+    }
+
+    static def parseDependencies(def yamlDeps) {
+        List<Dependency> deps = yamlDeps.collect {
+            Dependency dep = it.collect { k, v -> 
+              Dependency d = new Dependency(name: k, paths: v.paths)
+              if ( v.os ) { dep.os = v.os }
+              return d
+            }
+
+            return dep
+        }
+        return deps
     }
 
     static def parseServices(def steps) {
