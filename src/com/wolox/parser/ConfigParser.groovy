@@ -2,7 +2,7 @@ package com.wolox.parser;
 
 import com.wolox.ProjectConfiguration;
 import com.wolox.docker.DockerConfiguration;
-import com.wolox.dependency.*
+import com.wolox.dependencies.*
 import com.wolox.services.*;
 import com.wolox.steps.*;
 
@@ -95,15 +95,16 @@ class ConfigParser {
 
     static def parseDependencies(def yamlDeps) {
         List<Dependency> deps = yamlDeps.collect {
-            Dependency dep = it.collect { k, v -> 
-              Dependency d = new Dependency(name: k, paths: v.paths)
+            Dependency dep = new Dependency()
+            it.each { k, v ->
+              dep.name = k 
+              dep.paths = v.paths
               if ( v.os ) { dep.os = v.os }
-              return d
             }
 
             return dep
         }
-        return deps
+        return new Dependencies(dependencies: deps)
     }
 
     static def parseServices(def steps) {

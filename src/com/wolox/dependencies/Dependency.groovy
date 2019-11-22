@@ -1,4 +1,4 @@
-package com.wolox.dependency
+package com.wolox.dependencies
 
 class Dependency {
     String name

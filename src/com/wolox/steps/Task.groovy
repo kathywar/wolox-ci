@@ -1,11 +1,11 @@
 package com.wolox.steps
 
-import com.wolox.dependency.*
+import com.wolox.dependencies.*
 
 class Task {
     String name
     Map osMatrix = [:]
-    List<Dependency> dependencies
+    Dependencies dependencies
     List<String> artifacts
     String taskType
     String wsType = "scmworkspace"
