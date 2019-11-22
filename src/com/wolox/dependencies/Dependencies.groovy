@@ -7,11 +7,10 @@ class Dependencies {
         return dependencies.size()
     }
 
-    String getString() {
+    String getList() {
         List<String> strvals = dependencies.collect {
-            'Name=' + it.name + ',' +
-            'Paths=' + it.paths.toString() + ',' +
-            it.os }
+            it.paths.join(",")
+        }
         return strvals.join(',')
     }
 }

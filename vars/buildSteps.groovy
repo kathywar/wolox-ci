@@ -8,6 +8,12 @@ def call(ProjectConfiguration projectConfig) {
       task.osMatrix.each { k,v ->
         node("${k}") {
           println "workspace type: $task.wsType"
+
+          if (task.dependencies) {
+              copyArtifacts filter: task.dependencies.getList(),
+                            projectName: env.JOB_NAME,
+                            selector: specific(env.BUILD_NUMBER)
+          }
           stage("$task.name-create workspace-$k") {
             deleteDir()
             def wscreate = "$task.wsType"(projectConfig.environment,
@@ -25,6 +31,9 @@ def call(ProjectConfiguration projectConfig) {
                 }
               }
             }
+          }
+          if (task.artifacts) {
+            archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
           }
         }
       }
