@@ -7,26 +7,28 @@ def call(String yamlName="") {
     println "Build number= $buildNumber"
 
     // must clone once to retrieve yaml file
-    stage('initialize job') {
-      deleteDir()
-      def wscreate = scmworkspace([], 15)
-      wscreate()
-    }
+    node('LX&&SC') {
+        stage('initialize job') {
+            deleteDir()
+            def wscreate = scmworkspace([], 15)
+            wscreate()
+        }
 
-    if ( yamlName == "" ) {
-      yamlName = "$env.REPO_PATH/jenkins/jenkins.yml"
-    }
-    def yaml = readYaml file: yamlName;
+        if ( yamlName == "" ) {
+          yamlName = "$env.REPO_PATH/jenkins/jenkins.yml"
+        }
+        def yaml = readYaml file: yamlName;
+ 
+        // load project's configuration
+        ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
 
-    // load project's configuration
-    ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
+        // adds the last step of the build.
+        def closure = buildSteps(projectConfig)
 
-    // adds the last step of the build.
-    def closure = buildSteps(projectConfig)
-
-    // we execute the top level closure so that the cascade starts.
-    try {
-        closure([:])
-    } finally{
+        // we execute the top level closure so that the cascade starts.
+        try {
+            closure([:])
+        } finally{
+        }
     }
 }

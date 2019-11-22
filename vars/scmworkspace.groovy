@@ -6,8 +6,6 @@ def call(def projenv, def maxtime) {
       withEnv(projenv) {
         def url = scm.getUserRemoteConfigs()[0].getUrl()
         def repoName = url.tokenize('/').last().split("\\.git")[0]
-        println "Repo name: $repoName"
-        println "Url: $url"
 
         script {
 

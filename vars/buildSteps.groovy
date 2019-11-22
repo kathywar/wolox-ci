@@ -7,18 +7,18 @@ def call(ProjectConfiguration projectConfig) {
     tasksA.each { task ->
       task.osMatrix.each { k,v ->
         node("${k}") {
-          println "workspace type: $task.wsType"
 
-          if (task.dependencies) {
-              copyArtifacts filter: task.dependencies.getList(),
-                            projectName: env.JOB_NAME,
-                            selector: specific(env.BUILD_NUMBER)
-          }
           stage("$task.name-create workspace-$k") {
             deleteDir()
             def wscreate = "$task.wsType"(projectConfig.environment,
                                           projectConfig.timeout)
             wscreate()
+          }
+
+          if (task.dependencies) {
+              copyArtifacts filter: task.dependencies.getList(),
+                            projectName: env.JOB_NAME,
+                            selector: specific(env.BUILD_NUMBER)
           }
 
           List<Step> stepsA = task.steps.steps
