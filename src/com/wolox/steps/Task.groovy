@@ -8,7 +8,7 @@ class Task {
     Dependencies dependencies
     List<String> artifacts
     String taskType
-    String wsType = "scmworkspace"
+    String wsType = "scm"
     Steps steps
 
     def getVar(def dockerImage) {

@@ -11,6 +11,7 @@ class ConfigParser {
     private static String LATEST = 'latest'
     private static Integer DEFAULT_TIMEOUT = 600   // 600 seconds
     private static String DEFAULT_OS = 'linux'
+    private static String WORKSPACE_DEFAULT = 'default'
     private static String DEFAULT_WN_NODE = 'WN'
     private static String DEFAULT_LN_NODE = 'LX'
 
@@ -58,6 +59,10 @@ class ConfigParser {
             Task task = new Task(name: k)
 
             task.taskType = v.type
+
+            if (v.workspace && v.workspace != WORKSPACE_DEFAULT ) {
+                task.wsType = v.workspace
+            }
 
             if (v.os) {
                 task.osMatrix = v.os.collectEntries()
