@@ -1,10 +1,11 @@
 package com.wolox.parser;
 
-import com.wolox.ProjectConfiguration;
-import com.wolox.docker.DockerConfiguration;
+import com.wolox.ProjectConfiguration
+import com.wolox.docker.DockerConfiguration
 import com.wolox.dependencies.*
-import com.wolox.services.*;
-import com.wolox.steps.*;
+import com.wolox.services.*
+import com.wolox.steps.*
+import com.wolox.tasks.*
 
 class ConfigParser {
 
@@ -55,32 +56,44 @@ class ConfigParser {
 
     static def parseTasks(def yamlTasks) {
 
-        List<Task> tasks = yamlTasks.collect { k, v ->
-            Task task = new Task(name: k)
-
-            task.taskType = v.type
-
-            if (v.workspace && v.workspace != WORKSPACE_DEFAULT ) {
-                task.wsType = v.workspace
-            }
-
+        def tasks = [:]
+        yamlTasks.each { k, v ->
+            def osEntries = [:]
             if (v.os) {
-                task.osMatrix = v.os.collectEntries()
+                osEntries = v.os.collectEntries()
             } else {
-                task.osMatrix.put DEFAULT_LX_NODE, DEFAULT_OS
+                osEntries.put DEFAULT_LX_NODE, DEFAULT_OS
             }
 
-            task.steps = parseSteps(v.steps)
+            osEntries.each { node, os ->
+                String fullName = "$k-$node"
+                Task task = new Task(name: k)
+                task.fullName = fullName
+                tasks[(fullName)] = task
+                task.taskType = v.type
 
-            if (v.artifacts) {
-              task.artifacts = v.artifacts.paths
-            }
-            
-            if (v.dependencies) {
-              task.dependencies = parseDependencies(v.dependencies)
-            }
+                if (v.workspace && v.workspace != WORKSPACE_DEFAULT) {
+                    task.wsType = v.workspace
+                }
 
-            return task
+                task.os = os
+                task.nodeLabel = node
+
+                task.steps = parseSteps(v.steps)
+
+                if (v.artifacts) {
+                    task.artifacts = v.artifacts.paths
+                }
+
+                task.state = TaskStates.READY 
+                if (v.dependencies) {
+                    task.dependencies = parseDependencies(v.dependencies,
+                                                          tasks,
+                                                          fullName
+                                                         )
+                    task.state = TaskStates.WAIT
+                }
+            }
         }
         return new Tasks(tasks: tasks)
     }
@@ -98,15 +111,32 @@ class ConfigParser {
         return new Steps(steps: steps);
     }
 
-    static def parseDependencies(def yamlDeps) {
-        List<Dependency> deps = yamlDeps.collect {
+    static def parseDependencies(def yamlDeps, def taskList, def childTaskName) {
+        List<Dependency> deps = yamlDeps.collect { item ->
             Dependency dep = new Dependency()
-            it.each { k, v ->
-              dep.name = k 
-              dep.paths = v.paths
-              if ( v.os ) { dep.os = v.os }
-            }
+            if (item instanceof String) {
+                dep.name = item
+                dep.fullName =  taskList.find {
+                    it.value.name==item
+                }.key
+            } else {
+                item.each { k, v ->
+                    String fullName = ""
+                    if (v.os) {
+                        fullName = taskList.find { it.value.name==k && v.os==it.value.nodeLabel
+                                              }.key
+                    } else {
+                        fullName = taskList.find { it.value.name==k }.key
+                    }
+                    dep.name = k
+                    dep.fullName = fullName
 
+                    if (v.paths) { dep.paths = v.paths }
+                    if (v.os) { dep.os = v.os }
+                }
+            }
+            taskList[(dep.fullName)].dependents.add(childTaskName)
+      
             return dep
         }
         return new Dependencies(dependencies: deps)

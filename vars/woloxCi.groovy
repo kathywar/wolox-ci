@@ -5,6 +5,7 @@ def call(String yamlName="") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
+    env.BLDID = "joblock-" + env.BUILD_NUMBER.toString()
 
     // must clone once to retrieve yaml file
     node('LX&&SC') {
@@ -22,12 +23,20 @@ def call(String yamlName="") {
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
 
-        // adds the last step of the build.
-        def closure = buildSteps(projectConfig)
+        // define parallel task closures
+        def pTasks = [:]
+        projectConfig.tasks.tasks.each { k, v ->
+          String fullName = k
+          if ( ! v.dependencies ) {
+            pTasks[(fullName)] =  buildSteps(fullName, projectConfig) 
+          }
+        }
 
-        // we execute the top level closure so that the cascade starts.
+        // we execute a map of top level closures so that the cascade starts.
+        // These top level closures are the tasks which are independent, they
+        // in turn will start their dependent tasks
         try {
-            closure([:])
+            parallel pTasks
         } finally{
         }
     }

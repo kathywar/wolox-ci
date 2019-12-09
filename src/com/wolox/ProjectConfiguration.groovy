@@ -1,8 +1,9 @@
-package com.wolox;
+package com.wolox
 
-import com.wolox.docker.DockerConfiguration;
-import com.wolox.os.*;
-import com.wolox.steps.*;
+import com.wolox.docker.DockerConfiguration
+import com.wolox.os.*
+import com.wolox.steps.*
+import com.wolox.tasks.*
 
 class ProjectConfiguration {
     def environment;

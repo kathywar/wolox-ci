@@ -1,43 +1,84 @@
-import com.wolox.*;
-import com.wolox.steps.*;
+import java.time.LocalDateTime
 
-def call(ProjectConfiguration projectConfig) {
+import com.wolox.*
+import com.wolox.steps.*
+import com.wolox.tasks.*
+
+def call(String taskName, ProjectConfiguration projectConfig) {
   return {
-    List<Task> tasksA = projectConfig.tasks.tasks
-    tasksA.each { task ->
-      task.osMatrix.each { k,v ->
-        node("${k}") {
+    println "taskName: $taskName"
 
-          stage("$task.name-create workspace-$k") {
-            deleteDir()
-            def wsType = task.wsType + "workspace"
-            def wscreate = "$wsType"(projectConfig.environment,
-                                  projectConfig.timeout)
-            wscreate()
-          }
+    Task task = projectConfig.tasks.tasks[taskName]
+    task.state = TaskStates.RUNNING
 
-          if (task.dependencies) {
-              copyArtifacts filter: task.dependencies.getList(),
-                            projectName: env.JOB_NAME,
-                            selector: specific(env.BUILD_NUMBER)
-          }
+    node("${task.nodeLabel}") {
 
-          List<Step> stepsA = task.steps.steps
-          stepsA.each { step ->
-            stage("$task.name-$step.name-$k") {
-              timeout(time: projectConfig.timeout) {
-                withEnv(projectConfig.environment) {
-                  def closure = "${v}"(step)
-                  closure()
-                }
+      stage("$task.fullName-create workspace") {
+        deleteDir()
+        def wsType = task.wsType + "workspace"
+        def wscreate = "$wsType"(projectConfig.environment, projectConfig.timeout)
+        wscreate()
+      }
+
+      if (task.dependencies) {
+        copyArtifacts filter: task.dependencies.getList(),                           projectName: env.JOB_NAME,
+                      selector: specific(env.BUILD_NUMBER)
+      }
+
+      List<Step> stepsA = task.steps.steps
+      stepsA.each { step ->
+        stage("$task.fullName-$step.name") {
+          timeout(time: projectConfig.timeout) {
+            withEnv(projectConfig.environment) {
+              timestamps {
+                def closure = "${task.os}"(step)
+                closure()
               }
             }
           }
-          if (task.artifacts) {
-            archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
-          }
         }
       }
+      if (task.artifacts) {
+        archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
+      }
     }
-  }
+
+    def taskCanExecute = { String name ->
+        def result
+        Task t = projectConfig.tasks.tasks[ (name) ]
+        switch (t.state) {
+            case TaskStates.WAIT:
+                def blockingTasks = t.dependencies.dependencies.find {
+                    Task parent = projectConfig.tasks.tasks[ it.fullName ]
+                    return parent.state != TaskStates.DONE }
+                result = false
+                if ( ! blockingTasks ) { result = true }
+                break
+            case TaskStates.READY:
+                result = true
+                break
+            default:
+                result = false
+        }
+
+        result
+    }
+
+    task.state = TaskStates.DONE
+
+    // launch child tasks
+    if ( task.dependents ) {
+        def pChildSteps = [:]
+        lock(env.BLDID) {
+            task.dependents.each { 
+                Task dependent = projectConfig.tasks.tasks[ (it) ]
+                if ( dependent.dependencies.size() == 1 || taskCanExecute(dependent.fullName )) {
+                    dependent.state = TaskStates.SCHEDULED
+                    pChildSteps[(dependent.fullName)] = buildSteps( dependent.fullName, projectConfig)
+                }
+            }
+        }
+        parallel pChildSteps
+    }
+  }    
 }
