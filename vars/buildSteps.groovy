@@ -6,7 +6,8 @@ import com.wolox.tasks.*
 
 def call(String taskName, ProjectConfiguration projectConfig) {
   return {
-    println LocalDate.now() + ": Running task: $taskName"
+    def now = new Date()
+    println now.format("YYYY/MM/dd HH:mm:ss") + ": Running task: $taskName"
 
     Task task = projectConfig.tasks.tasks[taskName]
     task.state = TaskStates.RUNNING
@@ -43,7 +44,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       }
     }
 
-    println LocalDate.now() + ": Completed task: $taskName"
+    println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
 
     def taskCanExecute = { String name ->
         def result
@@ -75,12 +76,12 @@ def call(String taskName, ProjectConfiguration projectConfig) {
             task.dependents.each { 
                 Task dependent = projectConfig.tasks.tasks[ (it) ]
                 if ( taskCanExecute(dependent.fullName )) {
-                        println LocalDate.now() + ": Task: $taskName scheduled $dependent.fullName"
+                        println now.format("YYYY/MM/dd HH:mm:ss") + ": Task: $taskName scheduled $dependent.fullName"
                     dependent.state = TaskStates.SCHEDULED
                     pChildSteps[(dependent.fullName)] = buildSteps( dependent.fullName, projectConfig)
                 } else {
-                    println LocalDate.now() + ": Task: $taskName cannot schedule " +
-                                              " $dependent.fullName as it is blocked."
+                    println now.format("YYYY/MM/dd HH:mm:ss") + ": Task: $taskName cannot schedule " +
+                            " $dependent.fullName as it is blocked."
                 }
             }
         }
