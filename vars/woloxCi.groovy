@@ -10,6 +10,7 @@ def call(String yamlName="") {
     // must clone once to retrieve yaml file
     node('LX&&SC') {
         stage('initialize job') {
+            echo sh(returnStdout: true, script: "printenv && ls -la")
             deleteDir()
             def wscreate = scmworkspace([], 15)
             wscreate()

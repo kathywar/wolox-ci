@@ -19,7 +19,7 @@ def call(def projenv, def maxtime) {
  
           gitVars = dir("ws/$repoName") {
             git changelog: false,
-            credentialsId: 'kmw-github-cred', // TODO: remove hardcoded value
+            credentialsId: env.CREDENTIAL,
             poll: false,
             url: "$url",
             branch: "$env.LOCAL_BRANCH"

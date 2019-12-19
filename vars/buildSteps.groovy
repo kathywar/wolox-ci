@@ -22,7 +22,8 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       }
 
       if (task.dependencies) {
-        copyArtifacts filter: task.dependencies.getList(),                           projectName: env.JOB_NAME,
+        copyArtifacts filter: task.dependencies.getList(),
+                      projectName: env.JOB_NAME,
                       selector: specific(env.BUILD_NUMBER)
       }
 
