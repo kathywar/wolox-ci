@@ -16,7 +16,8 @@ def call(def projenv, def maxtime) {
           } else {
             env.LOCAL_BRANCH='master'
           }
- 
+
+          println "Credential: $env.CREDENTIAL" 
           gitVars = dir("ws/$repoName") {
             git changelog: false,
             credentialsId: env.CREDENTIAL,
