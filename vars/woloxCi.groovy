@@ -1,14 +1,13 @@
 import com.wolox.parser.ConfigParser;
 import com.wolox.*;
 
-def call(String yamlName="") {
+def call(String credential="github-cred", String yamlName="") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
+
     env.BLDID = "joblock-" + env.BUILD_NUMBER.toString()
-    if ( ! env.CREDENTIAL ) {
-        env.CREDENTIAL="github-cred"
-    }
+    env.CREDENTIAL = credential
 
     // must clone once to retrieve yaml file
     node('LX&&SC') {
