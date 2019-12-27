@@ -1,5 +1,8 @@
-import com.wolox.parser.ConfigParser;
-import com.wolox.*;
+// import logparser library
+@Library('pipeline-logparser@1.0.1') _
+
+import com.wolox.parser.ConfigParser
+import com.wolox.*
 
 def call(String credential="github-cred", String yamlName="") {
 

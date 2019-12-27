@@ -43,6 +43,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       }
       if (task.artifacts) {
         archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
+        logparser.archiveLogsWithBranchInfo("$task.fullName.txt", [filter:"$task.fullName", markNestedFiltered:false])
       }
     }
 
