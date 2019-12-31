@@ -1,6 +1,5 @@
-//@Library('wolox-ci')
-import com.wolox.*;
-import com.wolox.steps.Step;
+import com.wolox.*
+import com.wolox.steps.Step
 
 def call(Step step) {
   return {
