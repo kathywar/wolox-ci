@@ -9,7 +9,15 @@ def call( def projenv, def maxtime) {
         echo sh(returnStdout: true, script: 'printenv | sort')
         script {
 
-          if ( env.CHANGE_BRANCH ) {
+          println "Credential: $env.CREDENTIAL" 
+          gitVars = dir("ws/$repoName") {
+            git changelog: false,
+            credentialsId: env.CREDENTIAL,
+            poll: false,
+            url: "$url"
+          }
+ 
+         if ( env.CHANGE_BRANCH ) {
             env.LOCAL_BRANCH=env.CHANGE_BRANCH
           } else if ( env.BRANCH_NAME ) {
             env.LOCAL_BRANCH=env.BRANCH_NAME
@@ -25,22 +33,16 @@ def call( def projenv, def maxtime) {
               env.LOCAL_BRANCH=env.ghprbTargetBranch
               env.CHANGE_SPEC=env.ghprbPullId
               env.TREEISH=env.ghprbActualCommit
-          } else {
-              env.LOCAL_BRANCH='master'
+          } else if ( env.GIT_BRANCH ) {
+              def str=env.GIT_BRANCH
+              env.LOCAL_BRANCH=str.substring(str.lastIndexOf("origin/") + 1, str.length())
           }
 
-          println "Credential: $env.CREDENTIAL" 
-          gitVars = dir("ws/$repoName") {
-            git changelog: false,
-            credentialsId: env.CREDENTIAL,
-            poll: false,
-            url: "$url",
-            branch: "$env.LOCAL_BRANCH"
-          }
-          
           if ( env.CHANGE_SPEC ) {
               sh 'pwd'
               sh "cd ws/$repoName && git fetch origin $env.CHANGE_SPEC:jenkins-branch"
+          } else {
+              sh "cd ws/$repoName && git checkout $env.LOCAL_BRANCH"
           }
 
           env.GIT_COMMIT = gitVars.GIT_COMMIT
@@ -48,7 +50,7 @@ def call( def projenv, def maxtime) {
           env.GIT_BRANCH = gitVars.GIT_BRANCH
 
           println "Local branch is $env.GIT_LOCAL_BRANCH"
-            
+
         }
 
         env.WSDIR=env.WORKSPACE + '/ws'
