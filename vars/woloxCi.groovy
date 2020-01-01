@@ -1,5 +1,3 @@
-// import logparser library
-@Library('pipeline-logparser@1.0.1') _
 
 import com.wolox.parser.ConfigParser
 import com.wolox.*
