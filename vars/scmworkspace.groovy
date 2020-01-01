@@ -1,12 +1,12 @@
 import com.wolox.*;
 
-def call(def os, def projenv, def maxtime) {
+def call( def projenv, def maxtime) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
         def url = scm.getUserRemoteConfigs()[0].getUrl()
         def repoName = url.tokenize('/').last().split("\\.git")[0]
-
+        echo sh(returnStdout: true, script: 'printenv | sort')
         script {
 
           if ( env.CHANGE_BRANCH ) {
@@ -15,7 +15,7 @@ def call(def os, def projenv, def maxtime) {
             env.LOCAL_BRANCH=env.BRANCH_NAME
           } else if ( env.GERRIT_BRANCH ) {
             env.LOCAL_BRANCH=env.GERRIT_BRANCH
-            if ( GERRIT_EVENT_TYPE='change-merged') {
+            if ( GERRIT_EVENT_TYPE=='change-merged') {
                 env.TREEISH=env.GERRIT_NEWREV
             } else {
                 env.CHANGE_SPEC=env.GERRIT_REFSPEC
