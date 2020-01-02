@@ -1,21 +1,26 @@
 import com.wolox.*
-import com.wolox.steps.Step
 
-def call(Step step) {
+def call(ArrayList commands) {
   return {
 
-    env.WSTOP=env.WORKSPACE.replaceAll('\\\\','/')
+    if ( commands.size() > 1 ) {
+      env.WSTOP=env.WORKSPACE.replaceAll('\\\\','/')
 
-    def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
-    step.commands.each { 
-        echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n" 
+      def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
+      commands.each { 
+          echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n" 
+      }
+      writeFile file: "$WORKSPACE\\icl-pipeline.sh", text: """cd $WSTOP\n$echoscript"""
+      env.FILEPATH="$env.WSTOP/icl-pipeline.sh"
+      echo bat (returnStdout:true,
+                script: """call r:\\u4win\\u4w_ksh.bat /c %FILEPATH%
+                           exit %ERRORLEVEL
+                        """)
+      bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
+    } else {
+      echo bat (returnStdout: true,
+                script: """r:\\u4win\\bin\\x86_win32\\sh -x -c \"${commands[0]}\"""")
+
     }
-    writeFile file: "$WORKSPACE\\icl-pipeline.sh", text: """cd $WSTOP\n$echoscript"""
-    env.FILEPATH="$env.WSTOP/icl-pipeline.sh"
-    echo bat (returnStdout:true,
-              script: """call r:\\u4win\\u4w_ksh.bat /c %FILEPATH%
-                         exit %ERRORLEVEL
-                      """)
-    bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
   }
 }

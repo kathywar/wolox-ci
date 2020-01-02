@@ -1,11 +1,10 @@
-import com.wolox.*;
-import com.wolox.steps.Step;
+import com.wolox.*
 
-def call(Step step) {
+def call(ArrayList commands) {
   return {
       env.WSTOP = env.WORKSPACE
 
-      def scr = step.script()
+      def scr = commands.join('\n')
       sh """$scr"""
   }
 }

@@ -17,7 +17,8 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       stage("$task.fullName-create workspace") {
         deleteDir()
         def wsType = task.wsType + "workspace"
-        def wscreate = "$wsType"(projectConfig.environment,
+        def wscreate = "$wsType"(task.os,
+                                 projectConfig.environment,
                                  projectConfig.timeout)
         wscreate()
       }
@@ -34,7 +35,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
           timeout(time: projectConfig.timeout) {
             withEnv(projectConfig.environment) {
               timestamps {
-                def closure = "${task.os}"(step)
+                def closure = "${task.os}"(step.commands)
                 closure()
               }
             }
@@ -88,7 +89,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
                 }
             }
         }
-        parallel pChildSteps
+        if ( pChildSteps.size() ) { parallel pChildSteps }
     }
   }    
 }

@@ -1,6 +1,6 @@
 import com.wolox.*
 
-def call( def projenv, def maxtime) {
+def call( def os, def projenv, def maxtime) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
@@ -31,7 +31,6 @@ def call( def projenv, def maxtime) {
 
           def url = scm.getUserRemoteConfigs()[0].getUrl()
           def repoName = url.tokenize('/').last().split("\\.git")[0]
-          echo sh(returnStdout: true, script: 'printenv | sort')
           script {
 
             println "Credential: $env.CREDENTIAL"
@@ -44,11 +43,8 @@ def call( def projenv, def maxtime) {
           }
 
           if ( env.CHANGE_SPEC ) {
-              sh 'pwd'
-              sh "cd ws/$repoName && git fetch origin $env.CHANGE_SPEC:jenkins-branch"
-          } // else {
-       //       sh "cd ws/$repoName && git checkout $env.LOCAL_BRANCH"
-       //   }
+            os "cd ws/$repoName && git fetch origin $env.CHANGE_SPEC:jenkins-branch"
+          }
 
           env.GIT_COMMIT = gitVars.GIT_COMMIT
           env.GIT_LOCAL_BRANCH = gitVars.GIT_LOCAL_BRANCH

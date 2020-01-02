@@ -14,7 +14,7 @@ def call(String credential="github-cred", String yamlName="") {
     node('LX&&SC') {
         stage('initialize job') {
             deleteDir()
-            def wscreate = scmworkspace([], 15)
+            def wscreate = scmworkspace('linux', [], 15)
             wscreate()
         }
 
