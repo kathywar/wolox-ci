@@ -43,11 +43,11 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       }
       if (task.artifacts) {
         archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
-        logparser.archiveLogsWithBranchInfo(task.fullName + ".txt", [filter:"$task.fullName", markNestedFiltered:false])
       }
     }
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
+    logparser.archiveLogsWithBranchInfo(task.fullName + ".txt", [filter:"$task.fullName", markNestedFiltered:false])
 
     def taskCanExecute = { String name ->
         def result
