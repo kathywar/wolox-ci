@@ -4,6 +4,11 @@ def call( def os, def projenv, def maxtime) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
+        ArrayList list0 = []
+        list0.add("printenv | sort")
+        def closure ="$os"(list0)
+        closure()
+
         if ( env.CHANGE_BRANCH ) {
           env.LOCAL_BRANCH=env.CHANGE_BRANCH  //build triggered by multibranch job
         } else if ( env.BRANCH_NAME ) {
@@ -11,14 +16,14 @@ def call( def os, def projenv, def maxtime) {
         } else if ( env.GERRIT_BRANCH ) { // build triggered by gerrit change
           env.LOCAL_BRANCH=env.GERRIT_BRANCH
           if ( GERRIT_EVENT_TYPE=='change-merged') {
-            env.TREEISH=env.GERRIT_NEWREV
+            env.LOCAL_BRANCH=env.GERRIT_NEWREV
           } else {
-            env.CHANGE_SPEC=env.GERRIT_REFSPEC
+            env.LOCAL_BRANCH=env.GERRIT_REFSPEC
             env.TREEISH=env.GERRIT_BRANCH
           }
         } else if ( env.ghprbPullId ) {  // github pull request builder
-          env.LOCAL_BRANCH=env.ghprbTargetBranch
-          env.CHANGE_SPEC=env.ghprbPullId
+          //env.LOCAL_BRANCH=env.ghprbTargetBranch
+          env.LOCAL_BRANCH=env.ghprbPullId
           env.TREEISH=env.ghprbActualCommit
         } else if ( env.GIT_BRANCH ) {
           def str=env.GIT_BRANCH
@@ -42,7 +47,7 @@ def call( def os, def projenv, def maxtime) {
           }
 
           if ( env.CHANGE_SPEC ) {
-            os "cd ws/$repoName && git fetch origin $env.CHANGE_SPEC:jenkins-branch"
+            println "Checking out remote changeset patch"
           }
 
           env.GIT_COMMIT = gitVars.GIT_COMMIT
