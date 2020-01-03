@@ -34,10 +34,8 @@ def call(String taskName, ProjectConfiguration projectConfig) {
         stage("$task.fullName-$step.name") {
           timeout(time: projectConfig.timeout) {
             withEnv(projectConfig.environment) {
-              timestamps {
-                def closure = "${task.os}"(step.commands)
-                closure()
-              }
+              def closure = "${task.os}"(step.commands)
+              closure()
             }
           }
         }
