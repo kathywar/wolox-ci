@@ -1,5 +1,3 @@
-import com.wolox.*
-
 def call(ArrayList commands) {
   return {
     if ( commands.size() > 1 ) {
@@ -8,14 +6,10 @@ def call(ArrayList commands) {
       commands.each { 
           echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n" 
       }
-      println "Script commands are: $echoscript"
-      println "WORKSPACE2: $env.WORKSPACE"
       env.WSTOP = env.WORKSPACE.replaceAll('\\\\','/') 
       env.FILEPATH = env.WSTOP + "/icl-pipeline.sh"
 
       writeFile file: env.FILEPATH, text: """cd $WSTOP\n$echoscript"""
-
-      println "FILEPATH: $env.FILEPATH"
 
       echo bat (returnStdout:true,
                 script: """call r:\\u4win\\u4w_ksh.bat /c %FILEPATH%

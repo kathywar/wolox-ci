@@ -47,10 +47,10 @@ def call(String taskName, ProjectConfiguration projectConfig) {
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
     logparser.archiveLogsWithBranchInfo(task.fullName + ".txt",
-                                       [filter:"$task.fullName",
-                                        markNestedFiltered:false,
-                                        showParents:false
-                                       ])
+                                        [filter:"$task.fullName",
+                                         markNestedFiltered:false,
+                                         showParents:false
+                                        ])
 
     def taskCanExecute = { String name ->
         def result
@@ -79,10 +79,10 @@ def call(String taskName, ProjectConfiguration projectConfig) {
     if ( task.dependents ) {
         def pChildSteps = [:]
         lock(env.BLDID) {
-            task.dependents.each { 
+            task.dependents.each {
                 Task dependent = projectConfig.tasks.tasks[ (it) ]
                 if ( taskCanExecute(dependent.fullName )) {
-                        println now.format("YYYY/MM/dd HH:mm:ss") + ": Task: $taskName scheduled $dependent.fullName"
+                    println now.format("YYYY/MM/dd HH:mm:ss") + ": Task: $taskName scheduled $dependent.fullName"
                     dependent.state = TaskStates.SCHEDULED
                     pChildSteps[(dependent.fullName)] = buildSteps( dependent.fullName, projectConfig)
                 } else {
@@ -93,5 +93,5 @@ def call(String taskName, ProjectConfiguration projectConfig) {
         }
         if ( pChildSteps.size() ) { parallel pChildSteps }
     }
-  }    
+  }
 }
