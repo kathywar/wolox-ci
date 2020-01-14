@@ -36,6 +36,7 @@ class ConfigParser {
 
         // load the project name
         projectConfiguration.projectName = parseProjectName(yaml.config);
+        projectConfiguration.description = parseDescription(yaml.config, env.BUILD_ID)
 
         projectConfiguration.env = env;
 
@@ -189,5 +190,12 @@ class ConfigParser {
         }
 
         return config["project_name"];
+    }
+
+    static def parseDescription(def config, def number) {
+        if ( !config || !config["description"] ) {
+            return number
+        }
+        return config["description"]
     }
 }

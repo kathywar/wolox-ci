@@ -12,6 +12,7 @@ def call(String credential="github-cred", String yamlName="") {
 
     // must clone once to retrieve yaml file
     node('LX&&SC') {
+
         stage('initialize job') {
             deleteDir()
             def wscreate = scmworkspace('linux', [], 15)
@@ -25,6 +26,8 @@ def call(String credential="github-cred", String yamlName="") {
  
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
+
+        buildDescription projectConfig.description
 
         // define parallel task closures
         def pTasks = [:]
