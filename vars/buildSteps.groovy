@@ -17,9 +17,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       stage("$task.fullName-create workspace") {
         deleteDir()
         def wsType = task.wsType + "workspace"
-        def wscreate = "$wsType"(task.os,
-                                 projectConfig.environment,
-                                 projectConfig.timeout)
+        def wscreate = "$wsType"(projectConfig.environment, projectConfig.timeout)
         wscreate()
       }
 

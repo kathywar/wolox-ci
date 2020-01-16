@@ -1,4 +1,4 @@
-def call( def os, def projenv, def maxtime) {
+def call( def projenv, def maxtime, def sparsePath="." ) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
@@ -36,15 +36,20 @@ def call( def os, def projenv, def maxtime) {
 
         script {
           println "Credential: $env.CREDENTIAL"
-          gitVars = checkout([$class: 'GitSCM', 
-            branches: [[name: "$LOCAL_BRANCH"]], 
-            doGenerateSubmoduleConfigurations: false, 
-            extensions: [[$class: 'RelativeTargetDirectory', 
-            relativeTargetDir: "ws/$repoName"], [$class: 'WipeWorkspace']], 
-            submoduleCfg: [], 
-            userRemoteConfigs: [[credentialsId: env.CREDENTIAL, 
-            refspec: "$REFSPEC", 
-            url: url ]]])
+          gitVars = checkout(
+            changelog: false,
+            poll: false,
+            scm: [$class: 'GitSCM',
+                  branches: [[name: "$LOCAL_BRANCH"]],
+                  doGenerateSubmoduleConfigurations: false,
+                  extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: sparsePath ]]],
+                               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ws/$repoName'],
+                               [$class: 'WipeWorkspace']],
+                  submoduleCfg: [],
+                  userRemoteConfigs: [[credentialsId: "$CREDENTIAL",
+                                       url: url,
+                                       refspec: "$REFSPEC"]]]
+          )
         }
 
         env.GIT_COMMIT = gitVars.GIT_COMMIT
