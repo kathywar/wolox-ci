@@ -43,6 +43,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       if (task.artifacts) {
         archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
       }
+
     }
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
@@ -51,6 +52,9 @@ def call(String taskName, ProjectConfiguration projectConfig) {
                                          markNestedFiltered:false,
                                          showParents:false
                                         ])
+
+    // update build description at end of every task
+    buildDescription projectConfig.description
 
     def taskCanExecute = { String name ->
         def result
