@@ -1,6 +1,6 @@
 import com.wolox.*
 
-def call(String os, def projenv, def maxtime) {
+def call(def projenv, def maxtime) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {

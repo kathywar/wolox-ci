@@ -51,7 +51,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
                                          showParents:false
                                         ])
 
-    // update build description at end of every task
+    // update build description
     buildDescription projectConfig.description
 
     def taskCanExecute = { String name ->

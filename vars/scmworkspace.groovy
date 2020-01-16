@@ -1,4 +1,4 @@
-def call( def projenv, def maxtime, def sparsePath="." ) {
+def call( def projenv, def maxtime, def sparsePath="" ) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
@@ -36,15 +36,21 @@ def call( def projenv, def maxtime, def sparsePath="." ) {
 
         script {
           println "Credential: $env.CREDENTIAL"
+          def classDef = [[$class: 'RelativeTargetDirectory', relativeTargetDir: "ws/$repoName"],
+                          [$class: 'WipeWorkspace']]
+          if ( sparsePath && sparsePath != "" ) {
+              echo "Using a sparse checkout to path $sparsePath"
+              classDef = [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: sparsePath ]]],
+                          [$class: 'RelativeTargetDirectory', relativeTargetDir: "ws/$repoName"],
+                          [$class: 'WipeWorkspace']]
+          }
           gitVars = checkout(
             changelog: false,
             poll: false,
             scm: [$class: 'GitSCM',
                   branches: [[name: "$LOCAL_BRANCH"]],
                   doGenerateSubmoduleConfigurations: false,
-                  extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: sparsePath ]]],
-                               [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ws/$repoName'],
-                               [$class: 'WipeWorkspace']],
+                  extensions: classDef,
                   submoduleCfg: [],
                   userRemoteConfigs: [[credentialsId: "$CREDENTIAL",
                                        url: url,

@@ -2,7 +2,7 @@
 import com.wolox.parser.ConfigParser
 import com.wolox.*
 
-def call(String credential="github-cred", String yamlName="") {
+def call(String credential="github-cred", String yamlName="jenkins/jenkins.yml") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
@@ -19,10 +19,7 @@ def call(String credential="github-cred", String yamlName="") {
             wscreate()
         }
 
-        if ( yamlName == "" ) {
-          yamlName = "$env.REPO_PATH/jenkins/jenkins.yml"
-        }
-        def yaml = readYaml file: yamlName;
+        def yaml = readYaml file: "$env.REPO_PATH/$yamlName"
  
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
