@@ -27,6 +27,7 @@ def call(String credential="github-cred", String yamlName="") {
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
 
+        buildName projectConfig.projectName
         buildDescription projectConfig.description
 
         // define parallel task closures
