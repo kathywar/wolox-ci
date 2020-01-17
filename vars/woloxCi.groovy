@@ -15,7 +15,7 @@ def call(String credential="github-cred", String yamlName="jenkins/jenkins.yml")
 
         stage('initialize job') {
             deleteDir()
-            def wscreate = scmworkspace([], 15, yamlName)
+            def wscreate = scmworkspace([], 15)
             wscreate()
         }
 
