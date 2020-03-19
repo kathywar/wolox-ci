@@ -1,11 +1,14 @@
-def call( def projenv, def maxtime, def sparsePath="" ) {
+def call( def projenv, def maxtime, def useDefBranch=false, def sparsePath="" ) {
   return {
     timeout(time: maxtime) {
       withEnv(projenv) {
 
         env.REFSPEC="+refs/heads/*:refs/remotes/*"
 
-        if ( env.CHANGE_BRANCH ) {
+        // TODO: get rid of this long if clause
+        if ( useDefBranch ) {
+          env.LOCAL_BRANCH=env.DEFAULT_BRANCH
+        } else if ( env.CHANGE_BRANCH ) {
           env.LOCAL_BRANCH=env.CHANGE_BRANCH  //build triggered by multibranch job
         } else if ( env.BRANCH_NAME ) {
           env.LOCAL_BRANCH=env.BRANCH_NAME
