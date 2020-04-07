@@ -45,11 +45,14 @@ def call(String taskName, ProjectConfiguration projectConfig) {
     }
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
-    logparser.archiveLogsWithBranchInfo(task.fullName + ".txt",
-                                        [filter:"$task.fullName",
-                                         markNestedFiltered:false,
-                                         showParents:false
-                                        ])
+    // TO DO: this feature is disabled because of version/whitelist
+    // problem with production jenkins only (its ok with test jenkins)
+    // should be re-enabled when test/prod jenkins can be re-aligned
+    //logparser.archiveLogsWithBranchInfo(task.fullName + ".txt",
+    //                                    [filter:"$task.fullName",
+    //                                     markNestedFiltered:false,
+    //                                     showParents:false
+    //                                    ])
 
     // update build description
     buildDescription projectConfig.description
