@@ -1,11 +1,6 @@
 def call(ArrayList commands) {
   return {
     if ( commands.size() > 1 ) {
-      echo bat (returnStdout:true, script: """echo %HOMEPATH%
-                                           echo Find all drives
-                                           net use
-                                           d:
-                                           """)
       def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
       commands.each { 
           echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n" 
@@ -16,7 +11,7 @@ def call(ArrayList commands) {
       writeFile file: env.FILEPATH, text: """cd $WSTOP\n$echoscript"""
 
       echo bat (returnStdout:true,
-                script: """call c:\\u4win\\u4w_ksh.bat /c %FILEPATH%
+                script: """net use R: && call c:\\u4win\\u4w_ksh.bat /c %FILEPATH%
                            exit %ERRORLEVEL
                         """)
       bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
@@ -24,7 +19,7 @@ def call(ArrayList commands) {
       def cmd=commands[0]
       println "Running single command: $cmd"
       echo bat (returnStdout: true,
-                script: """r:\\u4win\\bin\\x86_win32\\sh -x -c \"${cmd}\"""")
+                script: """c:\\u4win\\bin\\x86_win32\\sh -x -c \"${cmd}\"""")
 
     }
   }
