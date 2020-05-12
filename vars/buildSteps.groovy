@@ -14,34 +14,75 @@ def call(String taskName, ProjectConfiguration projectConfig) {
 
     node("${task.nodeLabel}") {
 
-      stage("$task.fullName-create workspace") {
-        deleteDir()
-        def wsType = task.wsType + "workspace"
-        def wscreate = "$wsType"(projectConfig.environment, projectConfig.timeout)
-        wscreate()
-      }
-
-      if (task.dependencies) {
-        copyArtifacts filter: task.dependencies.getList(),
-                      projectName: env.JOB_NAME,
-                      selector: specific(env.BUILD_NUMBER)
-      }
-
-      List<Step> stepsA = task.steps.steps
-      stepsA.each { step ->
-        stage("$task.fullName-$step.name") {
-          timeout(time: projectConfig.timeout) {
-            withEnv(projectConfig.environment) {
-              def closure = "${task.os}"(step.commands)
-              closure()
+      try {
+  
+        stage("$task.fullName-create workspace") {
+          deleteDir()
+          def wsType = task.wsType + "workspace"
+          def wscreate = "$wsType"(projectConfig.environment, projectConfig.timeout)
+          wscreate()
+  
+        }
+  
+        if (task.dependencies) {
+          copyArtifacts filter: task.dependencies.getList(),
+                        projectName: env.JOB_NAME,
+                        selector: specific(env.BUILD_NUMBER)
+        }
+  
+        List<Step> stepsA = task.steps.steps
+        stepsA.each { step ->
+          stage("$task.fullName-$step.name") {
+            timeout(time: projectConfig.timeout) {
+              withEnv(projectConfig.environment) {
+                def closure = "${task.os}"(step.commands)
+                closure()
+              }
+            }
+          }
+        }
+  
+        if (task.artifacts) {
+          archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
+        }
+ 
+      } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException fie) {
+        // this ambiguous condition means a user probably aborted
+        println "FlowInterruptedException fired"
+        def num = fie.causes.size()
+        println "Exception data: $num"
+        def descr = fie.causes[0].getShortDescription()
+        println "Cause description: $descr"
+        if (descr.contains('Aborted')) {
+          println "Setting aborted flag after FlowInterruptedException"
+          env.ABORTED=1
+        } else {
+          throw fie
+        }
+      } catch (hudson.AbortException ae) {
+        // this ambiguous condition means during a shell step, user probably aborted
+        println "AbortException fired"
+        println "Message sent: " + ae.getMessage()
+        if (ae.getMessage().contains('script returned exit code 143')) {
+          println "Setting aborted flag after AbortException"
+          env.ABORTED=1
+        } else {
+          throw ae
+        }
+      } finally {
+        if ( task.abortSteps && env.ABORTED ) {
+          task.abortSteps.steps.each { step ->
+            stage("$task.fullName-abort-$step.name") {
+              timeout(time: projectConfig.timeout) {
+                withEnv(projectConfig.environment) {
+                  def closure = "${task.os}"(step.commands)
+                  closure()
+                }
+              }
             }
           }
         }
       }
-      if (task.artifacts) {
-        archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
-      }
-
     }
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
