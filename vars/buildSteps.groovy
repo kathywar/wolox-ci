@@ -49,12 +49,9 @@ def call(String taskName, ProjectConfiguration projectConfig) {
       } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException fie) {
         // this ambiguous condition means a user probably aborted
         println "FlowInterruptedException fired"
-        def num = fie.causes.size()
-        println "Exception data: $num"
         def descr = fie.causes[0].getShortDescription()
         println "Cause description: $descr"
         if (descr.contains('Aborted')) {
-          println "Setting aborted flag after FlowInterruptedException"
           env.ABORTED=1
         } else {
           throw fie
@@ -64,7 +61,6 @@ def call(String taskName, ProjectConfiguration projectConfig) {
         println "AbortException fired"
         println "Message sent: " + ae.getMessage()
         if (ae.getMessage().contains('script returned exit code 143')) {
-          println "Setting aborted flag after AbortException"
           env.ABORTED=1
         } else {
           throw ae
