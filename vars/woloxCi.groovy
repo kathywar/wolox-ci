@@ -42,7 +42,6 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         // in turn will start their dependent tasks
         try {
             parallel pTasks
-            if ( env.BUILD_RESULT ) { currentBuild.result = env.BUILD_RESULT }
         } finally{
         }
     }

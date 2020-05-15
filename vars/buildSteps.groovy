@@ -15,21 +15,21 @@ def call(String taskName, ProjectConfiguration projectConfig) {
     node("${task.nodeLabel}") {
 
       try {
-  
+
         stage("$task.fullName-create workspace") {
           deleteDir()
           def wsType = task.wsType + "workspace"
           def wscreate = "$wsType"(projectConfig.environment, projectConfig.timeout)
           wscreate()
-  
+
         }
-  
+
         if (task.dependencies) {
           copyArtifacts filter: task.dependencies.getList(),
                         projectName: env.JOB_NAME,
                         selector: specific(env.BUILD_NUMBER)
         }
-  
+
         List<Step> stepsA = task.steps.steps
         stepsA.each { step ->
           stage("$task.fullName-$step.name") {
@@ -41,11 +41,11 @@ def call(String taskName, ProjectConfiguration projectConfig) {
             }
           }
         }
-  
+
         if (task.artifacts) {
           archiveArtifacts artifacts: task.artifacts.join(','), allowEmptyArchive: true
         }
- 
+
       } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException fie) {
         // this ambiguous condition means a user probably aborted
         println "FlowInterruptedException fired"
