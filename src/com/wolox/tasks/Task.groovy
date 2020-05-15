@@ -23,6 +23,7 @@ class Task {
 
     TaskStates state
     Steps steps
+    Steps abortSteps
 
     def getVar(def dockerImage) {
         return "buildTask"
