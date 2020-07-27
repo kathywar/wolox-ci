@@ -45,11 +45,6 @@ def call(String taskName, ProjectConfiguration projectConfig) {
     }
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
-    logparser.archiveLogsWithBranchInfo(task.fullName + ".txt",
-                                        [filter:"$task.fullName",
-                                         markNestedFiltered:false,
-                                         showParents:false
-                                        ])
 
     // update build description
     buildDescription projectConfig.description
