@@ -10,7 +10,7 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
     env.BLDID = "joblock-" + env.BUILD_NUMBER.toString()
     env.CREDENTIAL = credential
     env.DEFAULT_BRANCH=defBranch
- 
+
     // must clone once to retrieve yaml file
     node('LX&&SC') {
 
@@ -21,7 +21,7 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         }
 
         def yaml = readYaml file: "$env.REPO_PATH/$yamlName"
- 
+
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
 
@@ -33,7 +33,7 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         projectConfig.tasks.tasks.each { k, v ->
           String fullName = k
           if ( ! v.dependencies ) {
-            pTasks[(fullName)] =  buildSteps(fullName, projectConfig) 
+            pTasks[(fullName)] =  buildSteps(fullName, projectConfig)
           }
         }
 

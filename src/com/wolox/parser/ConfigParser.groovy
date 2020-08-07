@@ -49,10 +49,10 @@ class ConfigParser {
 
     static def parseEnvironment(def environment) {
         if (!environment) {
-            return "";
+            return []
         }
 
-        return environment.collect { k, v -> "${k}=${v}"};
+        return environment.collect { k, v -> "${k}=${v}"}
     }
 
     static def parseTasks(def yamlTasks) {
