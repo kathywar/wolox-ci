@@ -2,7 +2,7 @@
 import com.wolox.parser.ConfigParser
 import com.wolox.*
 
-def call(String defBranch, Boolean useDefBranch=false, String credential="github-cred", String yamlName="jenkins/jenkins.yml") {
+def call(String defBranch, Boolean useDefBranch=false, String credential="github-cred", String yamlName="jenkins/jenkins.yml", Boolean updateRepo=true) {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
@@ -14,10 +14,12 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
     // must clone once to retrieve yaml file
     node('LX&&SC') {
 
-        stage('initialize job') {
-            deleteDir()
-            def wscreate = scmworkspace([], 15, useDefBranch)
-            wscreate()
+        if (updateRepo) {
+            stage('initialize job') {
+                deleteDir()
+                def wscreate = scmworkspace([], 15, useDefBranch)
+                wscreate()
+            }
         }
 
         def yaml = readYaml file: "$env.REPO_PATH/$yamlName"
