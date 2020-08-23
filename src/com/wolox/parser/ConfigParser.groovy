@@ -68,17 +68,17 @@ class ConfigParser {
 
             osEntries.each { node, os ->
                 //sh script: "echo $node"
-				String test = "echo $node"
-				String out_node = test.execute().text
-				println "$out_node"
+				//String test = "echo $node"
+				//String out_node = test.execute().text
+				//println "$out_node"
 				//proc.waitFor()
 				//println "return code: ${proc.exitValue()}"
                 //println "stderr: ${proc.err.text}"
                 //println "stdout: ${proc.in.text}"
 				//String testName = sh(script: "echo $node", returnStdout: true).trim()
 				//println("testName:" + testName)
-                //String fullName = "$k-$node"
-				String fullName = "$k-$out_node"
+                String fullName = "$k-$node"
+				//String fullName = "$k-$out_node"
                 Task task = new Task(name: k)
                 task.fullName = fullName
                 tasks[(fullName)] = task
