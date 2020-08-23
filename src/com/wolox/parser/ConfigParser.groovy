@@ -76,7 +76,8 @@ class ConfigParser {
                 println "stdout: ${proc.in.text}"
 				//String testName = sh(script: "echo $node", returnStdout: true).trim()
 				//println("testName:" + testName)
-                String fullName = "$k-$node"
+                //String fullName = "$k-$node"
+				String fullName = "$k-${proc.in.text}"
                 Task task = new Task(name: k)
                 task.fullName = fullName
                 tasks[(fullName)] = task
@@ -87,7 +88,7 @@ class ConfigParser {
                 }
 
                 task.os = os
-                task.nodeLabel = node
+                task.nodeLabel = ${proc.in.text}
 
                 task.steps = parseSteps(v.steps)
 
