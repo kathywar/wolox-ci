@@ -12,7 +12,7 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
     env.DEFAULT_BRANCH=defBranch
 
     // must clone once to retrieve yaml file
-    node('LX&&SC') {
+    node('scels80_debug') {
 
         if (updateRepo) {
             stage('initialize job') {
