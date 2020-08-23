@@ -68,7 +68,8 @@ class ConfigParser {
 
             osEntries.each { node, os ->
                 //sh script: "echo $node"
-				def proc = $node.execute()
+				String test = "$node"
+				def proc = test.execute()
 				proc.waitFor()
 				println "return code: ${proc.exitValue()}"
                 println "stderr: ${proc.err.text}"
