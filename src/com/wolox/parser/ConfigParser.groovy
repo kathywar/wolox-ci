@@ -67,7 +67,10 @@ class ConfigParser {
             }
 
             osEntries.each { node, os ->
-                String fullName = "$k-$node"
+                //sh script: "echo $node"
+				String test = "echo $node"
+				String out_node = test.execute().text
+                String fullName = "$k-$out_node"
                 Task task = new Task(name: k)
                 task.fullName = fullName
                 tasks[(fullName)] = task
@@ -78,7 +81,7 @@ class ConfigParser {
                 }
 
                 task.os = os
-                task.nodeLabel = node
+                task.nodeLabel = out_node
 
                 task.steps = parseSteps(v.steps)
 
