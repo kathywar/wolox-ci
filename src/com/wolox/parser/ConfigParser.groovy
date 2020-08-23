@@ -67,6 +67,8 @@ class ConfigParser {
             }
 
             osEntries.each { node, os ->
+                String testName = sh(script: "echo $node", returnStdout: true).trim()
+				println("testName:" + testName)
                 String fullName = "$k-$node"
                 Task task = new Task(name: k)
                 task.fullName = fullName
