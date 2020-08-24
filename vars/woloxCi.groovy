@@ -23,13 +23,15 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         }
 
         println "env.REPO_PATH= $env.REPO_PATH"
-		def yaml
+        /*def yaml
         if(env.REPO_PATH) {
             yaml = readYaml file: "$env.REPO_PATH/$yamlName"
         }
         else {
             yaml = readYaml file: "$yamlName"
-        }
+        }*/
+		def yaml = (env.REPO_PATH) ? readYaml file: "$env.REPO_PATH/$yamlName" : readYaml file: "$yamlName"
+
 
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
