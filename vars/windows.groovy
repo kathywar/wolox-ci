@@ -11,7 +11,11 @@ def call(ArrayList commands) {
       writeFile file: env.FILEPATH, text: """cd $WSTOP\n$echoscript"""
 
       echo bat (returnStdout:true,
-                script: """call c:\\u4win\\u4w_ksh.bat /c %FILEPATH%
+                script: """net use R: \\nncv03a-cifs.inn.intel.com\rdrive\wref1
+                           exit %ERRORLEVEL
+                        """)
+	  echo bat (returnStdout:true,
+                script: """call R:\\u4win\\u4w_ksh.bat /c %FILEPATH%
                            exit %ERRORLEVEL
                         """)
       bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
