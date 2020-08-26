@@ -8,7 +8,8 @@ Clone the repo,
 
 Create a private branch, then make your changes and push to your branch.
 
-When you have verified your changes, submit a pull request. Your verification job should include
+When you have verified your changes, submit a pull request. In the comments for your pull request, please
+describe the verification testing you've done. Your verification job should include
 regression tests - I suggest running your test yaml file with both windows and linux hosts, and both
 parallel and serial tasks, for example.
 
