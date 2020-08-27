@@ -11,7 +11,7 @@ def call(ArrayList commands) {
       writeFile file: env.FILEPATH, text: """cd $WSTOP\n$echoscript"""
 
       echo bat (returnStdout:true,
-                script: """net use R: \\\\nncv03a-cifs.inn.intel.com\\rdrive\\wref1
+                script: """if not exist "R:\\" (net use R: \\\\nncv03a-cifs.inn.intel.com\\rdrive\\wref1)
                            exit %ERRORLEVEL
                         """)
 	  echo bat (returnStdout:true,
