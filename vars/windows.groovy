@@ -3,7 +3,7 @@ def call(ArrayList commands) {
     if ( commands.size() > 1 ) {
       def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
       commands.each {
-          echoscript = echoscript
+          echoscript = echoscript + "${it}\n"
 		  //+ "echo + \"${it}\"\n" + "${it}\n"
       }
       env.WSTOP = env.WORKSPACE.replaceAll('\\\\','/')
