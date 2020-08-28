@@ -17,9 +17,8 @@ def call(ArrayList commands) {
                         """)
 	  echo bat (returnStdout:true,
                 script: """R:\\u4win\\u4w_ksh.bat /c %FILEPATH%
-                           exit %ERRORLEVEL
                         """)
-      bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
+      //bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
     } else {
       def cmd=commands[0]
       println "Running single command: $cmd"
