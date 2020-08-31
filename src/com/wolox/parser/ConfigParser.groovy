@@ -81,6 +81,7 @@ class ConfigParser {
                 task.nodeLabel = node
 
                 task.steps = parseSteps(v.steps)
+                task.abortSteps = parseSteps(v.onAbort)
 
                 if (v.artifacts) {
                     task.artifacts = v.artifacts.paths
