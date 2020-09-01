@@ -4,7 +4,7 @@ def call(ArrayList commands) {
       def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
       commands.each {
           echoscript = echoscript + "${it}\n"
-		  //+ "echo + \"${it}\"\n" + "${it}\n"
+          //+ "echo + \"${it}\"\n" + "${it}\n"
       }
       env.WSTOP = env.WORKSPACE.replaceAll('\\\\','/')
       env.FILEPATH = env.WSTOP + "/icl-pipeline.sh"
@@ -17,8 +17,9 @@ def call(ArrayList commands) {
                         """)
 	  echo bat (returnStdout:true,
                 script: """R:\\u4win\\u4w_ksh.bat /c %FILEPATH%
+                           exit %ERRORLEVEL
                         """)
-      //bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
+      bat returnStdout: true, script: 'del %WORKSPACE%\\icl-pipeline.sh'
     } else {
       def cmd=commands[0]
       println "Running single command: $cmd"
