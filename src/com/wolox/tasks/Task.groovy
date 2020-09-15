@@ -11,6 +11,8 @@ class Task {
 
     String os = "linux"
     String nodeLabel = "LX_EL8"
+    String nodeType = ""
+    String dispatcher
 
     // object containing information on
     // other Tasks this Task depends on

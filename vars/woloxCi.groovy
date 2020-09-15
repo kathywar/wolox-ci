@@ -1,4 +1,3 @@
-
 import com.wolox.parser.ConfigParser
 import com.wolox.*
 
@@ -21,6 +20,7 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         }
 
         def yaml = readYaml file: "$env.REPO_PATH/$yamlName"
+        println "Yaml: " + yaml
 
         // load project's configuration
         ProjectConfiguration projectConfig = ConfigParser.parse(yaml, env)
@@ -28,11 +28,15 @@ def call(String defBranch, Boolean useDefBranch=false, String credential="github
         buildName projectConfig.projectName
         buildDescription projectConfig.description
 
+        println "Project config: " + projectConfig.tasks.tasks
+
         // define parallel task closures
         def pTasks = [:]
         projectConfig.tasks.tasks.each { k, v ->
           String fullName = k
+          println "Task name: " + fullName
           if ( ! v.dependencies ) {
+            println "Adding task: " + fullName
             pTasks[(fullName)] =  buildSteps(fullName, projectConfig)
           }
         }
