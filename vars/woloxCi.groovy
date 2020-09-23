@@ -1,19 +1,23 @@
 import com.wolox.parser.ConfigParser
 import com.wolox.*
 
-def call(String defBranch, Boolean useDefBranch=false, String credential="github-cred", String yamlName="jenkins/jenkins.yml") {
+def call(String defBranch, Boolean useDefBranch=false, String tf_cred="tf-cred",
+         String yamlName="jenkins/jenkins.yml", String github_cred="github-cred") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
 
     env.BLDID = "joblock-" + env.BUILD_NUMBER.toString()
-    env.CREDENTIAL = credential
+    env.GITHUB_CREDENTIAL = github_cred
+    env.CREDENTIAL=tf_cred
     env.DEFAULT_BRANCH=defBranch
 
     // must clone once to retrieve yaml file
     node('LX&&SC') {
 
         stage('initialize job') {
+            env.DEFAULT_USER=sh(script:'whoami', returnStdout:true)
+            println "Default user: $env.DEFAULT_USER"
             deleteDir()
             def wscreate = scmworkspace([], 15, useDefBranch)
             wscreate()
