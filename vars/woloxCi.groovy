@@ -2,7 +2,7 @@ import com.wolox.parser.ConfigParser
 import com.wolox.*
 
 def call(String defBranch, Boolean useDefBranch=false, String tf_cred="tf-cred",
-         String yamlName="jenkins/jenkins.yml", String github_cred="github-cred") {
+         String yamlName="jenkins/jenkins.yml", String github_cred="") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
