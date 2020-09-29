@@ -16,13 +16,11 @@ def call(String taskName, ProjectConfiguration projectConfig) {
 
     if (task.dispatcher) {
       node("${task.dispatcher}") {
-        println "Env vars for creating NB job: $env.GITHUB_CREDENTIAL $env.DEFAULT_USER"
         nodeName = "${task.nodeLabel}_" + now.format("YYYYMMdd_HHmmss")
         if (!Create_Node_Step(platform: task.os,
                               NodeClass: "${task.nodeLabel}",
                               NodeLabel: "${nodeName}",
-                              JenkinsUser: "${env.DEFAULT_USER}",
-                              TokenID: "${env.GITHUB_CREDENTIAL}",
+                              TokenID: "${env.JENKINS_API_CREDENTIAL}",
                               CIBranch: "private/kathywar/generic_server_token" )) {
           currentBuild.result = 'FAILURE'
         }
