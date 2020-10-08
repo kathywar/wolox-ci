@@ -1,4 +1,4 @@
-package com.wolox.parser;
+package com.wolox.parser
 
 import com.wolox.ProjectConfiguration
 import com.wolox.docker.DockerConfiguration
@@ -18,33 +18,33 @@ class ConfigParser {
 
     static ProjectConfiguration parse(def yaml, def env) {
 
-        ProjectConfiguration projectConfiguration = new ProjectConfiguration();
+        ProjectConfiguration projectConfiguration = new ProjectConfiguration()
 
-        projectConfiguration.buildNumber = env.BUILD_ID;
+        projectConfiguration.buildNumber = env.BUILD_ID
 
         // parse the environment variables
-        projectConfiguration.environment    = parseEnvironment(yaml.environment);
+        projectConfiguration.environment    = parseEnvironment(yaml.environment)
 
         // parse the execution steps
-        projectConfiguration.tasks          = parseTasks(yaml.tasks);
+        projectConfiguration.tasks          = parseTasks(yaml.tasks)
 
         // parse the necessary services
-        projectConfiguration.services   = parseServices(yaml.services);
+        projectConfiguration.services   = parseServices(yaml.services)
 
         // load the dockefile
-        projectConfiguration.dockerfile = parseDockerfile(yaml.config);
+        projectConfiguration.dockerfile = parseDockerfile(yaml.config)
 
         // load the project name
-        projectConfiguration.projectName = parseProjectName(yaml.config);
+        projectConfiguration.projectName = parseProjectName(yaml.config)
         projectConfiguration.description = parseDescription(yaml.config, env.BUILD_ID)
 
-        projectConfiguration.env = env;
+        projectConfiguration.env = env
 
-        projectConfiguration.dockerConfiguration = new DockerConfiguration(projectConfiguration: projectConfiguration);
+        projectConfiguration.dockerConfiguration = new DockerConfiguration(projectConfiguration: projectConfiguration)
 
-        projectConfiguration.timeout = yaml.timeout ?: DEFAULT_TIMEOUT;
+        projectConfiguration.timeout = yaml.timeout ?: DEFAULT_TIMEOUT
 
-        return projectConfiguration;
+        return projectConfiguration
     }
 
     static def parseEnvironment(def environment) {
@@ -59,26 +59,34 @@ class ConfigParser {
 
         def tasks = [:]
         yamlTasks.each { k, v ->
-            def osEntries = [:]
-            if (v.os) {
-                osEntries = v.os.collectEntries()
+
+            def osEntries = []
+            if ( v.os) {
+                osEntries = v.os
             } else {
-                osEntries.put DEFAULT_LX_NODE, DEFAULT_OS
+                osEntries = [[ DEFAULT_LX_NODE: DEFAULT_OS ]]
             }
 
-            osEntries.each { node, os ->
-                String fullName = "$k-$node"
+            osEntries.each {
+
+                def nodeInfo = it.find { it.key != 'dispatcher' }
+
+                String fullName = "$k-$nodeInfo.key"
                 Task task = new Task(name: k)
                 task.fullName = fullName
+
                 tasks[(fullName)] = task
                 task.taskType = v.type
+
+                task.os = nodeInfo.value
+                task.nodeLabel = nodeInfo.key
+                if ( it.dispatcher ) {
+                  task.dispatcher = it.dispatcher
+                }
 
                 if (v.workspace && v.workspace != WORKSPACE_DEFAULT) {
                     task.wsType = v.workspace
                 }
-
-                task.os = os
-                task.nodeLabel = node
 
                 task.steps = parseSteps(v.steps)
                 task.abortSteps = parseSteps(v.onAbort)
@@ -89,10 +97,7 @@ class ConfigParser {
 
                 task.state = TaskStates.READY 
                 if (v.dependencies) {
-                    task.dependencies = parseDependencies(v.dependencies,
-                                                          tasks,
-                                                          fullName
-                                                         )
+                    task.dependencies = parseDependencies(v.dependencies, tasks, fullName )
                     task.state = TaskStates.WAIT
                 }
             }
@@ -104,7 +109,7 @@ class ConfigParser {
         List<Step> steps = yamlSteps.collect { k, v ->
             return new Step(k, v)
         }
-        return new Steps(steps: steps);
+        return new Steps(steps: steps)
     }
 
     static def parseDependencies(def yamlDeps, def taskList, def childTaskName) {

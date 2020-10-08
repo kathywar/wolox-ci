@@ -12,7 +12,22 @@ def call(String taskName, ProjectConfiguration projectConfig) {
     Task task = projectConfig.tasks.tasks[taskName]
     task.state = TaskStates.RUNNING
 
-    node("${task.nodeLabel}") {
+    def nodeName = "${task.nodeLabel}"
+
+    if (task.dispatcher) {
+      node("${task.dispatcher}") {
+        nodeName = "${task.nodeLabel}_" + now.format("YYYYMMdd_HHmmss")
+        if (!Create_Node_Step(platform: task.os,
+                              NodeClass: "${task.nodeLabel}",
+                              NodeLabel: "${nodeName}",
+                              TokenID: "${env.JENKINS_API_CREDENTIAL}",
+                              CIBranch: "private/kathywar/generic_server_token" )) {
+          currentBuild.result = 'FAILURE'
+        }
+      }
+    }
+
+    node("${nodeName}") {
 
       try {
 

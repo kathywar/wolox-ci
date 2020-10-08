@@ -1,14 +1,15 @@
-
 import com.wolox.parser.ConfigParser
 import com.wolox.*
 
-def call(String defBranch, Boolean useDefBranch=false, String credential="github-cred", String yamlName="jenkins/jenkins.yml") {
+def call(String defBranch, Boolean useDefBranch=false, String scm_cred="",
+         String yamlName="jenkins/jenkins.yml", String jenkins_cred="") {
 
     def buildNumber = Integer.parseInt(env.BUILD_ID)
     println "Build number= $buildNumber"
 
     env.BLDID = "joblock-" + env.BUILD_NUMBER.toString()
-    env.CREDENTIAL = credential
+    env.JENKINS_API_CREDENTIAL = jenkins_cred
+    env.CREDENTIAL=scm_cred
     env.DEFAULT_BRANCH=defBranch
 
     // must clone once to retrieve yaml file
