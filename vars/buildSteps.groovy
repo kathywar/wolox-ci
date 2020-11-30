@@ -21,7 +21,7 @@ def call(String taskName, ProjectConfiguration projectConfig) {
                               NodeClass: "${task.nodeLabel}",
                               NodeLabel: "${nodeName}",
                               TokenID: "${env.JENKINS_API_CREDENTIAL}",
-                              CIBranch: "private/kathywar/generic_server_token" )) {
+                              CIBranch: "master" )) {
           currentBuild.result = 'FAILURE'
         }
       }
