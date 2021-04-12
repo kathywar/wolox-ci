@@ -13,7 +13,7 @@ def call(String defBranch, Boolean useDefBranch=false, String scm_cred="",
     env.DEFAULT_BRANCH=defBranch
 
     // must clone once to retrieve yaml file
-    node('LX&&SC') {
+    node('linux_dispatcher_inn') {
 
         stage('initialize job') {
             deleteDir()
