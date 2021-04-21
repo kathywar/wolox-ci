@@ -71,7 +71,9 @@ class ConfigParser {
             }
         }
 
-        return environment.add(COMPONENT: component_str)
+        environment.add(COMPONENT: component_str);
+
+        return environment
     }
 
     static def parseTasks(def yamlTasks) {
