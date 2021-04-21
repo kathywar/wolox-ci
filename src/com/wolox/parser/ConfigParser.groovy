@@ -44,7 +44,7 @@ class ConfigParser {
 
         projectConfiguration.timeout = yaml.timeout ?: DEFAULT_TIMEOUT
 
-        projectConfiguration.environment    = parseComponent(yaml.component)
+        //projectConfiguration.environment    = parseComponent(yaml.component)
 
         return projectConfiguration
     }
@@ -56,7 +56,7 @@ class ConfigParser {
 
         return environment.collect { k, v -> "${k}=${v}"}
     }
-
+/*
     static def parseComponent(def component) {
         if (!component) {
             return []
@@ -75,7 +75,7 @@ class ConfigParser {
 
         return environment
     }
-
+*/
     static def parseTasks(def yamlTasks) {
 
         def tasks = [:]
