@@ -44,7 +44,7 @@ class ConfigParser {
 
         projectConfiguration.timeout = yaml.timeout ?: DEFAULT_TIMEOUT
 
-        //projectConfiguration.environment    = parseComponent(yaml.component)
+        projectConfiguration.environment    = parseComponent(yaml.component, projectConfiguration.environment)
 
         return projectConfiguration
     }
@@ -56,26 +56,24 @@ class ConfigParser {
 
         return environment.collect { k, v -> "${k}=${v}"}
     }
-/*
-    static def parseComponent(def component) {
+
+    static def parseComponent(def component, environment) {
         if (!component) {
             return []
         }
-        component_str = ""
-        def components = [:]
+        def component_str = ""
         component.each { k, v ->
             if (v.need_to_sign == 1) {
                 def dirname = v.dir
-                String fullpath = "$dirname/$k#"
+                def fullpath = "$dirname/$k#"
                 component_str = component_str + fullpath
             }
         }
-
-        environment.add(COMPONENT: component_str);
+        environment.add("COMPONENT=${component_str}");
 
         return environment
     }
-*/
+
     static def parseTasks(def yamlTasks) {
 
         def tasks = [:]
