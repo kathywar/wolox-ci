@@ -65,8 +65,8 @@ class ConfigParser {
         component.each { k, v ->
             if (v.need_to_sign == 1) {
                 def dirname = v.dir
-                def fullpath = "$dirname/$k#"
-                component_str = component_str + fullpath
+                //def fullpath = "$dirname/$k#"
+                component_str = component_str + "$dirname"
             }
         }
         environment.add("COMPONENT=${component_str}");
