@@ -46,6 +46,8 @@ class ConfigParser {
 
         projectConfiguration.environment    = parseComponent(yaml.component, projectConfiguration.environment)
 
+        projectConfiguration.environment    = parseBuild(yaml.build_sequence, projectConfiguration.environment)
+
         return projectConfiguration
     }
 
@@ -70,6 +72,27 @@ class ConfigParser {
             }
         }
         environment.add("COMPONENT=${component_str}");
+
+        return environment
+    }
+
+    static def parseBuild(def build_sequence, environment) {
+        if (!build_sequence) {
+            return []
+        }
+        def build_steps = ""
+        build_sequence.each { k, v ->
+            build_steps = build_steps + "$k#"
+            if (v.extra_opt) {
+                def extra_opt = v.extra_opt
+                environment.add("${k}_EXTRA_OPT=${extra_opt}");
+            }
+            if (v.timeout) {
+                def tmp_timeout = v.timeout
+                environment.add("${k}_TIMEOUT=${tmp_timeout}");
+            }
+        }
+        environment.add("BUILD_STEPS=${build_steps}");
 
         return environment
     }
