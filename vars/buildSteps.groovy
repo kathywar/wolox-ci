@@ -104,7 +104,8 @@ def call(String taskName, ProjectConfiguration projectConfig) {
 
     println now.format("YYYY/MM/dd HH:mm:ss") + ": Completed task: $taskName"
 
-    // update build description
+    // update build name and description
+    buildName projectConfig.projectName
     buildDescription projectConfig.description
 
     def taskCanExecute = { String name ->
