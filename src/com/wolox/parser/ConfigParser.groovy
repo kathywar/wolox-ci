@@ -61,7 +61,7 @@ class ConfigParser {
 
     static def parseComponent(def component, environment) {
         if (!component) {
-            return []
+            return environment
         }
         def component_str = ""
         component.each { k, v ->
@@ -78,7 +78,7 @@ class ConfigParser {
 
     static def parseBuild(def build_sequence, environment) {
         if (!build_sequence) {
-            return []
+            return environment
         }
         def build_steps = ""
         build_sequence.each { k, v ->
