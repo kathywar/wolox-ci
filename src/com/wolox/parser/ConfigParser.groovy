@@ -91,6 +91,10 @@ class ConfigParser {
                 def tmp_timeout = v.timeout
                 environment.add("${k}_TIMEOUT=${tmp_timeout}");
             }
+            if (v.parallel) {
+                def tmp_parallel = v.parallel
+                environment.add("${k}_PARALLEL=${tmp_parallel}");
+            }
         }
         environment.add("BUILD_STEPS=${build_steps}");
 
