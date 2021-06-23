@@ -44,6 +44,10 @@ class ConfigParser {
 
         projectConfiguration.timeout = yaml.timeout ?: DEFAULT_TIMEOUT
 
+        projectConfiguration.environment    = parseComponent(yaml.component, projectConfiguration.environment)
+
+        projectConfiguration.environment    = parseBuild(yaml.build_sequence, projectConfiguration.environment)
+
         return projectConfiguration
     }
 
@@ -53,6 +57,48 @@ class ConfigParser {
         }
 
         return environment.collect { k, v -> "${k}=${v}"}
+    }
+
+    static def parseComponent(def component, environment) {
+        if (!component) {
+            return environment
+        }
+        def component_str = ""
+        component.each { k, v ->
+            if (v.need_to_sign == 1) {
+                def dirname = v.dir
+                //def fullpath = "$dirname/$k#"
+                component_str = component_str + "$dirname#"
+            }
+        }
+        environment.add("COMPONENT=${component_str}");
+
+        return environment
+    }
+
+    static def parseBuild(def build_sequence, environment) {
+        if (!build_sequence) {
+            return environment
+        }
+        def build_steps = ""
+        build_sequence.each { k, v ->
+            build_steps = build_steps + "$k#"
+            if (v.extra_opt) {
+                def extra_opt = v.extra_opt
+                environment.add("${k}_EXTRA_OPT=${extra_opt}");
+            }
+            if (v.timeout) {
+                def tmp_timeout = v.timeout
+                environment.add("${k}_TIMEOUT=${tmp_timeout}");
+            }
+            if (v.parallel) {
+                def tmp_parallel = v.parallel
+                environment.add("${k}_PARALLEL=${tmp_parallel}");
+            }
+        }
+        environment.add("BUILD_STEPS=${build_steps}");
+
+        return environment
     }
 
     static def parseTasks(def yamlTasks) {

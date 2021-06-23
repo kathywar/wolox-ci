@@ -3,7 +3,8 @@ def call(ArrayList commands) {
     if ( commands.size() > 1 ) {
       def echoscript = "#!/bin/bash\nset -eE -o pipefail\n"
       commands.each {
-          echoscript = echoscript + "echo + \"${it}\"\n" + "${it}\n"
+          echoscript = echoscript + "${it}\n"
+          //+ "echo + \"${it}\"\n" + "${it}\n"
       }
       env.WSTOP = env.WORKSPACE.replaceAll('\\\\','/')
       env.FILEPATH = env.WSTOP + "/icl-pipeline.sh"
